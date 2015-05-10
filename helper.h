@@ -19,6 +19,9 @@ int read_data(double **vec, options opt);
 int randint(int n);
 int In(int idx, int *arr, int end);
 void check(void *v);
-void add(double *to, double *from, options opt);
+double *add(double *to, double *from, options opt);
+double *div_by(double *vec, int c, options opt);
+void print_vecs(double **vec, options opt, char *type);
+void print_vec(double *vec, int len);
 
 #endif

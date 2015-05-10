@@ -117,10 +117,35 @@ void check(void *v) {
     }
 }
 
-void add(double *to, double *from, options opt) {
+double *add(double *to, double *from, options opt) {
     int i;
     for(i = 0; i < opt.dimensions; i++)
         to[i] += from[i];
+    return to;
+}
+
+double *div_by(double *vec, int c, options opt) {
+    int i;
+    for(i = 0; i < opt.dimensions; i++)
+        vec[i] /= (double) c;
+    return vec;
+}
+
+void print_vecs(double **vec, options opt, char *type) {
+    int i, end;
+    if(strcmp(type, "centroids") == 0) end = opt.n_centroids;
+    else end = opt.n_points;
+    for(i = 0; i < end; i++) {
+        print_vec(vec[i], opt.dimensions);
+    }
+}
+
+void print_vec(double *vec, int len) {
+    int j;
+    for(j = 0; j < len; j++) {
+        printf("%f ", vec[j]);
+    }
+    printf("\n");
 }
 
 
