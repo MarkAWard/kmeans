@@ -226,23 +226,6 @@ const char *CsvParser_getErrorMessage(CsvParser *csvParser) {
     return csvParser->errMsg_;
 }
 
-int read_data(const char *filename, const char *delimiter, double **vec, int N, int d) {
-    CsvParser *csvparser = CsvParser_new(filename, delimiter, 0);
-    CsvRow *row;
-    int j, i = 0;
-    while ((row = CsvParser_getRow(csvparser)) && i < N ) {
-        char **rowFields = CsvParser_getFields(row);
-        if (CsvParser_getNumFields(row) != d) return -1;
-        for (j = 0 ; j < CsvParser_getNumFields(row); j++) {
-            vec[i][j] = atof(rowFields[j]);
-        }
-        CsvParser_destroy_row(row);
-        i++;
-    }
-    CsvParser_destroy(csvparser);
-    return 0;
-}
-
 #ifdef __cplusplus
 }
 #endif

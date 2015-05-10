@@ -35,13 +35,12 @@ CsvRow *CsvParser_getRow(CsvParser *csvParser);
 int CsvParser_getNumFields(CsvRow *csvRow);
 char **CsvParser_getFields(CsvRow *csvRow);
 const char* CsvParser_getErrorMessage(CsvParser *csvParser);
-int read_data(const char *filename, const char *delimiter, double **vec, int N, int d);
-
 
 // Private
 CsvRow *_CsvParser_getRow(CsvParser *csvParser);    
 int _CsvParser_delimiterIsAccepted(const char *delimiter);
 void _CsvParser_setErrorMessage(CsvParser *csvParser, const char *errorMessage);
+
 
 #ifdef __cplusplus
 }

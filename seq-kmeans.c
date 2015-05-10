@@ -1,25 +1,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-#include "csvparser.h"
+#include "helper.h"
 
 #define DELIMITER ","
 
-void exit_with_help(){
-    printf("HELP HELP HELPPPP!!\n");
-    exit(1);
-}
-
-struct options {
-    char *filename;
-    char *sep;
-    int n_points;
-    int dimensions;
-};
-typedef struct options options;
-
-
-void parse_command_line(int argc, char **argv, options *opt);
 double l2_distance(double *x1, double *x2, int d);
 
 int main(int argc, char **argv) {
@@ -66,32 +51,4 @@ double l2_distance(double *x1, double *x2, int d) {
 
 
 
-
-void parse_command_line(int argc, char **argv, options *opt) {
-    // default options
-    opt->sep = DELIMITER;
-    // parse options
-    int i;
-    for(i=1;i<argc;i++) {
-        printf("%d\n", i);
-        if(argv[i][0] != '-') break;
-        if(++i>=argc) exit_with_help();
-        switch(argv[i-1][1]) {
-            case 'f':
-                opt->filename = argv[i];
-                break;
-            case 'n':
-                opt->n_points = atoi(argv[i]);
-                break;
-            case 'd':
-                opt->dimensions = atoi(argv[i]);
-                break;
-            case 's':
-                opt->sep = argv[i];
-            default:
-                fprintf(stderr,"unknown option: -%c\n", argv[i-1][1]);
-                exit_with_help();
-        }
-    }
-}
 
