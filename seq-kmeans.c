@@ -50,6 +50,11 @@ int main(int argc, char **argv) {
     int *membership = (int*) calloc(opt.n_points, sizeof(int));
     check(membership);
 
+
+    /**
+    *   These can be moved within the kmeans function
+    **/
+    
     // allocate for new centroids that will be computed
     double **new_centers = (double**) malloc(opt.n_centroids * sizeof(double*));
     check(new_centers);
@@ -125,7 +130,32 @@ void find_nearest_centroid(double *x, double **centroids, options opt, \
 
 void kmeans(double **data, double **centroids, int *membership, \
             double **new_centers, int *count_centers, options opt) {
-
+    double inertia, dist, delta = 0.0;
+    int i, center, iters = 0;
+    while (delta / ((double) opt.n_points) > opt.tol && iters < opt.max_iter) {
+        delta = 0.0;
+        inertia = 0.0;
+        for(i = 0; i < opt.n_points; i++){
+            find_nearest_centroid(data[i], centroids, opt, &center, &dist);
+            inertia += dist;
+            if (membership[i] != center) {
+                delta++;
+                membership[i] = center;       
+            }
+            add(new_centers[center], data[i], opt);
+            count_centers[center]++; 
+        }
+        for(i = 0; i < opt.n_centroids; i++) {
+            if(count_centers[i] == 0) {
+                // pick a random point
+            }
+            else {
+                // calculate the new center
+            }
+        }
+        // zero out new_centers and count_centers
+        iters++;
+    }
 }
 
 
