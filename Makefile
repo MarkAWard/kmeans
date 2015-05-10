@@ -10,11 +10,11 @@ seq-kmeans: seq-kmeans.c helper.c
 
 .PHONY: test
 test:
-	./seq-kmeans -f test_data.csv -n 25 -d 3
+	./seq-kmeans -f test_data.csv -n 25 -d 3 -k 5
 
 .PHONY: memcheck
 memcheck:
-	valgrind --leak-check=full ./seq-kmeans -f test_data.csv -n 25 -d 3
+	valgrind --leak-check=full ./seq-kmeans -f test_data.csv -n 25 -d 3 -k 5
 
 .PHONY: clean
 clean:
