@@ -131,6 +131,14 @@ double *div_by(double *vec, int c, options opt) {
     return vec;
 }
 
+void *memory_copy(double **dest, double **src, options opt) {
+    int i;
+    for(i = 0; i < opt.n_centroids; i++){
+        memcpy(dest[i], src[i], opt.dimensions * sizeof(double));
+    }
+    return dest;
+}
+
 void print_vecs(double **vec, options opt, char *type) {
     int i, end;
     if(strcmp(type, "centroids") == 0) end = opt.n_centroids;

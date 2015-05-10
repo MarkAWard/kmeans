@@ -21,6 +21,7 @@ int In(int idx, int *arr, int end);
 void check(void *v);
 double *add(double *to, double *from, options opt);
 double *div_by(double *vec, int c, options opt);
+void *memory_copy(double **dest, double **src, options opt);
 void print_vecs(double **vec, options opt, char *type);
 void print_vec(double *vec, int len);
 

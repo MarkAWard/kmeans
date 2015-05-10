@@ -172,7 +172,7 @@ void kmeans(double **data, double **centroids, int *membership, \
         }
         printf("\nBEFORE\n");
         print_vecs(centroids, opt, "centroids");
-        memcpy(centroids, new_centers, opt.n_centroids * opt.dimensions * sizeof(double));
+        memory_copy(centroids, new_centers, opt);
         printf("AFTER\n");
         print_vecs(centroids, opt, "centroids");
         // zero out new_centers and count_centers
