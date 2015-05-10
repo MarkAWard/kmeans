@@ -11,14 +11,19 @@ void initialize(double **data, double **centroids, options opt);
 double l2_distance(double *x1, double *x2, options opt);
 void find_nearest_centroid(double *x, double **centroids, options opt, \
                             int *idx, double *distance);
+void kmeans(double **data, double **centroids, int *membership, \
+            double **new_centers, int *count_centers, options opt); 
+
 
 int main(int argc, char **argv) {
 
     srand(time(NULL));
     int i, j;
     options opt;
+
     parse_command_line(argc, argv, &opt);
 
+    // allocate memory for data
     double **data = (double**) malloc(opt.n_points * sizeof(double*));
     check(data);
     double *_data = (double*) malloc(opt.n_points * opt.dimensions * sizeof(double));
@@ -26,30 +31,38 @@ int main(int argc, char **argv) {
     for(i = 0; i < opt.n_points; i++) {
         data[i] = _data + (i * opt.dimensions);
     }
+    // read in the data file
     read_data(data, opt);
 
+    // allocate centroids
     double **centroids = (double**) malloc(opt.n_centroids * sizeof(double*));
     check(centroids);
+    // allocate continuous memory chunks for faster sequential access
     double *_centroids = (double*) malloc(opt.n_centroids * opt.dimensions * sizeof(double));
     check(_centroids);
     for(i = 0; i < opt.n_centroids; i++) {
         centroids[i] = _centroids + (i * opt.dimensions);
     }
-
+    // initialize the centriods with random data points
     initialize(data, centroids, opt);
 
-    // for (i = 0; i < opt.n_points; ++i) {
-    //     for(j = i+1; j < opt.n_points; j++){
+    // allocate and initialize points' cluster memberships to 0
+    int *membership = (int*) calloc(opt.n_points, sizeof(int));
+    check(membership);
 
-    //     }
-    // }
+    // allocate for new centroids that will be computed
+    double **new_centers = (double**) malloc(opt.n_centroids * sizeof(double*));
+    check(new_centers);
+    // and initialize to 0
+    double *_new_centers = (double*) calloc(opt.n_centroids * opt.dimensions, sizeof(double));
+    check(_new_centers);
+    for(i = 0; i < opt.n_centroids; i++) {
+        new_centers[i] = _new_centers + (i * opt.dimensions);
+    }
 
-    // printf("\n");
-    // for (i = 0; i < opt.n_points; ++i) {
-    //     for(j = i+1; j < opt.n_points; j++){
-    //         printf("%d, %d, %f\n", i, j, l2_distance(data[i], data[j], opt));
-    //     }
-    // }
+    // allocate array to count points in each cluster, initialize to 0
+    int *count_centers = (int*) calloc(opt.n_centroids, sizeof(int));
+
 
     int idx;
     double dist;
@@ -64,6 +77,11 @@ int main(int argc, char **argv) {
     free(data); 
     free(centroids);
     free(_centroids);
+    free(membership);
+    free(new_centers);
+    free(_new_centers);
+    free(count_centers);
+
     return 0;
 }
 
@@ -102,6 +120,12 @@ void find_nearest_centroid(double *x, double **centroids, options opt, \
             *idx = i;
         }
     }
+}
+
+
+void kmeans(double **data, double **centroids, int *membership, \
+            double **new_centers, int *count_centers, options opt) {
+
 }
 
 
