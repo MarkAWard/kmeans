@@ -139,7 +139,6 @@ void kmeans(double **data, double **centroids, int *membership, \
     printf("iters: %d\n", iters);
     printf("delta: %f\n", delta);
     printf("eps: %f\n", delta / ((double) opt.n_points));
-    printf("inertia: %f\n", *inertia);
     print_vecs(centroids, opt, "centroids");
 
     while (delta / ((double) opt.n_points) > opt.tol && iters < opt.max_iter) {
@@ -158,30 +157,20 @@ void kmeans(double **data, double **centroids, int *membership, \
         printf("\n");
         for(i = 0; i < opt.n_centroids; i++) {
             if(count_centers[i] == 0) {
-                printf("HERE 0\n");
                 // pick a random point, not sure if this is the best option
                 add(new_centers[i], data[randint(opt.n_points)], opt);
                 // add to delta to ensure we dont stop after this
                 delta += opt.tol * opt.n_points + 1.0;
             }
             else {
-                printf("HERE 1: %d\n", count_centers[i]);
-                print_vec(new_centers[i], opt.dimensions);
                 // calculate the new center
                 div_by(new_centers[i], count_centers[i], opt);
-                print_vec(new_centers[i], opt.dimensions);
             }
         }
-        printf("\nBEFORE\n");
-        print_vecs(centroids, opt, "centroids");
         memory_copy(centroids, new_centers, opt);
-        printf("AFTER\n");
-        print_vecs(centroids, opt, "centroids");
         // zero out new_centers and count_centers
         memory_set(new_centers,   0, opt);
         memset(count_centers, 0, opt.n_centroids * sizeof(int));
-        printf("AFTER MEMSET\n");
-        print_vecs(centroids, opt, "centroids");
 
         iters++;        
         printf("\n");
