@@ -46,6 +46,7 @@ def kmeans(data, n_clusters=10, init='random', tol=0.0001, max_iter=300, best_of
 			for j in xrange(n_clusters):
 				if count_centers[j] == 0:
 					centroids[j] = data[np.random.random_integers(data.shape[0]-1)]
+					delta += tol * N + 1.0
 				else:
 					centroids[j] = new_centers[j] / count_centers[j]
 			new_centers = np.zeros((n_clusters, data.shape[1]))
