@@ -18,8 +18,9 @@ def kmeans(data, n_clusters=10, init='random', tol=0.0001, max_iter=300, best_of
 	def _kmeans(data, n_clusters, init, tol, max_iter):
 
 		if init == 'random':
-			rand_choices = np.random.random_integers(data.shape[0]-1, size=n_clusters)
-			centroids = data[rand_choices]
+			rand = range(data.shape[0])
+			np.random.shuffle(rand)
+			centroids = data[rand[:n_clusters]]
 		else:
 			raise NameError('Unknown initialization method')
 		membership    = np.zeros(data.shape[0])
