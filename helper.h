@@ -12,6 +12,6 @@ typedef struct options {
 
 void exit_with_help();
 void parse_command_line(int argc, char **argv, options *opt);
-int read_data(const char *filename, const char *delimiter, double **vec, int N, int d);
+int read_data(double **vec, options opt);
 
 #endif

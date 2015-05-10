@@ -3,8 +3,6 @@
 #include <math.h>
 #include "helper.h"
 
-#define DELIMITER ","
-
 double l2_distance(double *x1, double *x2, int d);
 
 int main(int argc, char **argv) {
@@ -19,7 +17,7 @@ int main(int argc, char **argv) {
         data[j] = _data + (j * opt.dimensions);
     }
 
-    read_data(opt.filename, ",", data, opt.n_points, opt.dimensions);
+    read_data(data, opt);
     for(i=0; i<opt.n_points; i++){
         for(j=0; j<opt.dimensions; j++){
             printf("%d, %d, %f\n", i, j, data[i][j]);

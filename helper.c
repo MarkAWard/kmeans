@@ -36,14 +36,14 @@ void parse_command_line(int argc, char **argv, options *opt) {
     }
 }
 
-int read_data(const char *filename, const char *delimiter, double **vec, int N, int d) {
-    CsvParser *csvparser = CsvParser_new(filename, delimiter, 0);
+int read_data(double **vec, options opt) {
+    CsvParser *csvparser = CsvParser_new(opt.filename, opt.sep, 0);
     CsvRow *row;
     int j, i = 0;
-    while ((row = CsvParser_getRow(csvparser)) && i < N ) {
+    while ((row = CsvParser_getRow(csvparser)) && i < opt.n_points ) {
         char **rowFields = CsvParser_getFields(row);
-        if (CsvParser_getNumFields(row) != d) return -1;
-        for (j = 0 ; j < CsvParser_getNumFields(row); j++) {
+        if (CsvParser_getNumFields(row) < opt.dimensions) return -1;
+        for (j = 0 ; j < CsvParser_getNumFields(row) && j < opt.dimensions; j++) {
             vec[i][j] = atof(rowFields[j]);
         }
         CsvParser_destroy_row(row);
