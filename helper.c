@@ -15,9 +15,11 @@ void exit_with_help(){
 *		add the other options
 ***/
 #define DELIMITER ","
+#define NCLUSTERS 5
 void parse_command_line(int argc, char **argv, options *opt) {
     // default options
     opt->sep = DELIMITER;
+    opt->n_centroids = NCLUSTERS;
     // parse options
     int i;
     for(i=1;i<argc;i++) {
@@ -35,6 +37,9 @@ void parse_command_line(int argc, char **argv, options *opt) {
                 break;
             case 's':
                 opt->sep = argv[i];
+            case 'k':
+                opt->n_centroids = atoi(argv[i]);
+                break;
             default:
                 fprintf(stderr,"unknown option: -%c\n", argv[i-1][1]);
                 exit_with_help();
@@ -66,5 +71,37 @@ int read_data(double **vec, options opt) {
     fclose(fstream);
     return 0;
 }
+
+
+/***
+ * Returns an integer in the range [0, n).
+ * Uses rand(), and so is affected-by/affects the same seed.
+ */
+int randint(int n) {
+    if ((n - 1) == RAND_MAX) {
+        return rand();
+    } 
+    else {
+        // Chop off all of the values that would cause skew...
+        long end = RAND_MAX / n; // truncate skew
+        end *= n;    
+        // and ignore results from rand() that fall above that limit.
+        int r;
+        while ((r = rand()) >= end);
+        return r % n;
+    }
+}
+
+int In(int idx, int *arr, int end) {
+    int i;
+    for(i = 0; i < end; i++){
+        if(arr[i] == idx) return 1;
+    }
+    return 0;
+}
+
+
+
+
 
 
