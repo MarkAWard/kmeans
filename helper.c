@@ -16,10 +16,14 @@ void exit_with_help(){
 ***/
 #define DELIMITER ","
 #define NCLUSTERS 5
+#define EPSILON 1e-4
+#define MAX_ITER 300
 void parse_command_line(int argc, char **argv, options *opt) {
     // default options
     opt->sep = DELIMITER;
     opt->n_centroids = NCLUSTERS;
+    opt->tol = EPSILON;
+    opt->max_iter = MAX_ITER;
     // parse options
     int i;
     for(i=1;i<argc;i++) {
@@ -39,6 +43,12 @@ void parse_command_line(int argc, char **argv, options *opt) {
                 opt->sep = argv[i];
             case 'k':
                 opt->n_centroids = atoi(argv[i]);
+                break;
+            case 'e':
+                opt->tol = atoi(argv[i]);
+                break;
+            case 'i':
+                opt->max_iter = atoi(argv[i]);
                 break;
             default:
                 fprintf(stderr,"unknown option: -%c\n", argv[i-1][1]);
@@ -105,6 +115,12 @@ void check(void *v) {
         printf("malloc failed\n");
         exit(-1);
     }
+}
+
+void add(double *to, double *from, options opt) {
+    int i;
+    for(i = 0; i < opt.dimensions; i++)
+        to[i] += from[i];
 }
 
 
