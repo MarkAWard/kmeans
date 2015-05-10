@@ -3,10 +3,6 @@
 
 #include <stdio.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 typedef struct CsvRow {
     char **fields_;
     int numOfFields_;
@@ -41,9 +37,5 @@ CsvRow *_CsvParser_getRow(CsvParser *csvParser);
 int _CsvParser_delimiterIsAccepted(const char *delimiter);
 void _CsvParser_setErrorMessage(CsvParser *csvParser, const char *errorMessage);
 
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif
