@@ -7,7 +7,7 @@
 ***/
 void exit_with_help(){
     printf("HELP HELP HELPPPP!!\n");
-    exit(1);
+    exit(-1);
 }
 
 /***
@@ -57,7 +57,7 @@ int read_data(double **vec, options opt) {
     FILE *fstream = fopen(opt.filename, "r");
     if(fstream == NULL) {
       printf("\n file opening failed ");
-      return -1 ;
+      exit(-1) ;
     }
     while( (line = fgets(buffer, sizeof(buffer), fstream)) != NULL && i < opt.n_points) {
         j = 0;
@@ -100,6 +100,12 @@ int In(int idx, int *arr, int end) {
     return 0;
 }
 
+void check(void *v) {
+    if(v == NULL){
+        printf("malloc failed\n");
+        exit(-1);
+    }
+}
 
 
 

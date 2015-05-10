@@ -16,5 +16,6 @@ void parse_command_line(int argc, char **argv, options *opt);
 int read_data(double **vec, options opt);
 int randint(int n);
 int In(int idx, int *arr, int end);
+void check(void *v);
 
 #endif

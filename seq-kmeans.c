@@ -20,17 +20,22 @@ int main(int argc, char **argv) {
     parse_command_line(argc, argv, &opt);
 
     double **data = (double**) malloc(opt.n_points * sizeof(double*));
+    check(data);
     double *_data = (double*) malloc(opt.n_points * opt.dimensions * sizeof(double));
+    check(_data);
     for(i = 0; i < opt.n_points; i++) {
         data[i] = _data + (i * opt.dimensions);
     }
     read_data(data, opt);
 
     double **centroids = (double**) malloc(opt.n_centroids * sizeof(double*));
+    check(centroids);
     double *_centroids = (double*) malloc(opt.n_centroids * opt.dimensions * sizeof(double));
+    check(_centroids);
     for(i = 0; i < opt.n_centroids; i++) {
         centroids[i] = _centroids + (i * opt.dimensions);
     }
+
     initialize(data, centroids, opt);
 
     // for (i = 0; i < opt.n_points; ++i) {
@@ -65,6 +70,7 @@ int main(int argc, char **argv) {
 void initialize(double **data, double **centroids, options opt) {
     int i, idx;
     int *init = (int*) malloc(opt.n_centroids * sizeof(int));
+    check(init);
     for(i = 0; i < opt.n_centroids; i++){
         while(In(idx = randint(opt.n_points), init, i));
         init[i] = idx;
