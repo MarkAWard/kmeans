@@ -139,6 +139,14 @@ void *memory_copy(double **dest, double **src, options opt) {
     return dest;
 }
 
+void *memory_set(double **dest, double c, options opt) {
+    int i;
+    for(i = 0; i < opt.n_centroids; i++){
+        memset(dest[i], c, opt.dimensions * sizeof(double));
+    }
+    return dest;
+}
+
 void print_vecs(double **vec, options opt, char *type) {
     int i, end;
     if(strcmp(type, "centroids") == 0) end = opt.n_centroids;

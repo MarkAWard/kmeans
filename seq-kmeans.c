@@ -3,6 +3,7 @@
 #include <math.h>
 #include <time.h>
 #include <string.h>
+#include <float.h>
 #include "helper.h"
 
 #define SQR(x) (x)*(x)
@@ -60,7 +61,7 @@ int main(int argc, char **argv) {
 
     // print_vecs(centroids, opt, "centroids");
 
-    double inertia = 0.0;
+    double inertia = DBL_MAX;
     kmeans(data, centroids, membership, &inertia, opt);
 
     printf("\nINERTIA: %f\n", inertia);
@@ -138,6 +139,7 @@ void kmeans(double **data, double **centroids, int *membership, \
     printf("iters: %d\n", iters);
     printf("delta: %f\n", delta);
     printf("eps: %f\n", delta / ((double) opt.n_points));
+    printf("inertia: %f\n", *inertia);
     print_vecs(centroids, opt, "centroids");
 
     while (delta / ((double) opt.n_points) > opt.tol && iters < opt.max_iter) {
@@ -176,7 +178,7 @@ void kmeans(double **data, double **centroids, int *membership, \
         printf("AFTER\n");
         print_vecs(centroids, opt, "centroids");
         // zero out new_centers and count_centers
-        memset(new_centers,   0, opt.n_centroids * opt.dimensions * sizeof(double));
+        memory_set(new_centers,   0, opt);
         memset(count_centers, 0, opt.n_centroids * sizeof(int));
         printf("AFTER MEMSET\n");
         print_vecs(centroids, opt, "centroids");
@@ -186,6 +188,7 @@ void kmeans(double **data, double **centroids, int *membership, \
         printf("iters: %d\n", iters);
         printf("delta: %f\n", delta);
         printf("eps: %f\n", delta / ((double) opt.n_points));
+        printf("inertia: %f\n", *inertia);
         print_vecs(centroids, opt, "centroids");
     }
     free(new_centers);
