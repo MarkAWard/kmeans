@@ -1,12 +1,19 @@
 #include <stdlib.h>
+#include <string.h>
 #include "helper.h"
-#include "csvparser.h"
 
+/***
+* TODO: provide real help menu
+***/
 void exit_with_help(){
     printf("HELP HELP HELPPPP!!\n");
     exit(1);
 }
 
+/***
+* TODO: defaults for n_points/sep to -1
+*		add the other options
+***/
 #define DELIMITER ","
 void parse_command_line(int argc, char **argv, options *opt) {
     // default options
@@ -14,7 +21,6 @@ void parse_command_line(int argc, char **argv, options *opt) {
     // parse options
     int i;
     for(i=1;i<argc;i++) {
-        printf("%d\n", i);
         if(argv[i][0] != '-') break;
         if(++i>=argc) exit_with_help();
         switch(argv[i-1][1]) {
@@ -36,19 +42,29 @@ void parse_command_line(int argc, char **argv, options *opt) {
     }
 }
 
+/***
+* TODO: check for n_points/sep, determine from file if not given 
+***/
 int read_data(double **vec, options opt) {
-    CsvParser *csvparser = CsvParser_new(opt.filename, opt.sep, 0);
-    CsvRow *row;
+    char buffer[1024] ;
+    char *record, *line;
     int j, i = 0;
-    while ((row = CsvParser_getRow(csvparser)) && i < opt.n_points ) {
-        char **rowFields = CsvParser_getFields(row);
-        if (CsvParser_getNumFields(row) < opt.dimensions) return -1;
-        for (j = 0 ; j < CsvParser_getNumFields(row) && j < opt.dimensions; j++) {
-            vec[i][j] = atof(rowFields[j]);
+    FILE *fstream = fopen(opt.filename, "r");
+    if(fstream == NULL) {
+      printf("\n file opening failed ");
+      return -1 ;
+    }
+    while( (line = fgets(buffer, sizeof(buffer), fstream)) != NULL && i < opt.n_points) {
+        j = 0;
+        record = strsep(&line, opt.sep);
+        while(record != NULL && j < opt.dimensions) {
+            vec[i][j++] = atof(record) ;
+            record = strsep(&line, opt.sep);
         }
-        CsvParser_destroy_row(row);
         i++;
     }
-    CsvParser_destroy(csvparser);
+    fclose(fstream);
     return 0;
 }
+
+
