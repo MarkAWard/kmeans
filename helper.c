@@ -15,6 +15,7 @@ void exit_with_help(){
 *		add the other options
 ***/
 #define DELIMITER ","
+#define DIM -1
 #define NCLUSTERS 5
 #define EPSILON 1e-4
 #define MAX_ITER 300
@@ -23,6 +24,8 @@ void exit_with_help(){
 void parse_command_line(int argc, char **argv, options *opt) {
     // default options
     opt->sep = DELIMITER;
+    opt->n_points = DIM;
+    opt->dimensions = DIM;
     opt->n_centroids = NCLUSTERS;
     opt->tol = EPSILON;
     opt->max_iter = MAX_ITER;
@@ -65,6 +68,7 @@ void parse_command_line(int argc, char **argv, options *opt) {
                 exit_with_help();
         }
     }
+    if(i < argc) opt->filename = argv[i];
 }
 
 /***
@@ -89,6 +93,23 @@ void read_data(double **vec, options opt) {
         i++;
     }
     fclose(fstream);
+}
+
+void get_dimensions(options *opt) {
+    char *record, *buf = NULL;
+    size_t line_cap = 0;
+    int rows, cols;
+    FILE *fp = fopen(opt->filename, "r");
+
+    rows = cols = 0;    
+    getline(&buf, &line_cap, fp); rows++;
+    while((record = strsep(&buf, ","))) cols++;
+    while (EOF != (fscanf(fp, "%*[^\n]"), fscanf(fp, "%*c"))) rows++;
+
+    if(opt->n_points == -1) opt->n_points = rows;
+    if(opt->dimensions == -1) opt->dimensions = cols;
+
+    fclose(fp);
 }
 
 void *alloc2d(int rows, int cols) {

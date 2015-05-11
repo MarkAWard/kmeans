@@ -19,6 +19,7 @@ void exit_with_help();
 void parse_command_line(int argc, char **argv, options *opt);
 
 void read_data(double **vec, options opt);
+void get_dimensions(options *opt);
 void *alloc2d(int rows, int cols);
 void *memory_copy(double **dest, double **src, options opt);
 void *memory_set(double **dest, double c, options opt);

@@ -24,6 +24,7 @@ int main(int argc, char **argv) {
 
     options opt;
     parse_command_line(argc, argv, &opt);
+    if(opt.n_points == -1 || opt.dimensions == -1) get_dimensions(&opt);
 
     // allocate memory for data
     double **data = (double**) alloc2d(opt.n_points, opt.dimensions);
