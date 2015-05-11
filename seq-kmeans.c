@@ -32,8 +32,7 @@ int main(int argc, char **argv) {
     // for(i = 0; i < opt.n_points; i++) {
     //     data[i] = _data + (i * opt.dimensions);
     // }
-    double **data = NULL;
-    alloc2d(data, opt.n_points, opt.dimensions);
+    double **data = (double**) alloc2d(opt.n_points, opt.dimensions);
     // read in the data file
     read_data(data, opt);
 

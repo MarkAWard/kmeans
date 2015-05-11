@@ -81,8 +81,8 @@ void read_data(double **vec, options opt) {
     fclose(fstream);
 }
 
-void alloc2d(double **v, int rows, int cols) {
-    v = (double**) malloc(rows * sizeof(double*));
+void *alloc2d(int rows, int cols) {
+    double **v = (double**) malloc(rows * sizeof(double*));
     check(v);
     double *_v = (double*) malloc(rows * cols * sizeof(double));
     check(_v);
@@ -90,7 +90,7 @@ void alloc2d(double **v, int rows, int cols) {
     for(i = 0; i < rows; i++) {
         v[i] = _v + (i * cols);
     }    
-    free(_v);
+    return v;
 }
 
 
