@@ -99,7 +99,7 @@ void _kmeans(double **data, double **centroids, int *membership, \
 
     // allocate for new centroids that will be computed
     double **new_centers = (double**) alloc2d(opt.n_centroids, opt.dimensions);
-    memory_set(new_centers, 0, opt);
+    memset(*new_centers, 0, opt.n_centroids * opt.dimensions * sizeof(double));
     // allocate array to count points in each cluster, initialize to 0
     int *count_centers = (int*) calloc(opt.n_centroids, sizeof(int));
 
@@ -131,9 +131,9 @@ void _kmeans(double **data, double **centroids, int *membership, \
                 div_by(new_centers[i], count_centers[i], opt);
             }
         }
-        memory_copy(centroids, new_centers, opt);
+        memcpy(*centroids, *new_centers, opt.n_centroids * opt.dimensions * sizeof(double));
         // zero out new_centers and count_centers
-        memory_set(new_centers, 0, opt);
+        memset(*new_centers, 0, opt.n_centroids * opt.dimensions * sizeof(double));
         memset(count_centers, 0, opt.n_centroids * sizeof(int));
 
         iters++;
@@ -160,7 +160,7 @@ void kmeans(double **data, double **centroids, int *membership, \
         _kmeans(data, temp_centroids, temp_membership, &temp_inertia, opt);
         if(temp_inertia < *inertia) {
             *inertia = temp_inertia;
-            memory_copy(centroids, temp_centroids, opt);
+            memcpy(*centroids, *temp_centroids, opt.n_centroids * opt.dimensions * sizeof(double));
             memcpy(membership, temp_membership, opt.n_points * sizeof(int));
         }
     }
