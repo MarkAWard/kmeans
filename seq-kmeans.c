@@ -96,6 +96,7 @@ void _kmeans(double **data, double **centroids, int *membership, \
 
     // allocate for new centroids that will be computed
     double **new_centers = (double**) alloc2d(opt.n_centroids, opt.dimensions);
+    memory_set(new_centers, 0, opt);
     // allocate array to count points in each cluster, initialize to 0
     int *count_centers = (int*) calloc(opt.n_centroids, sizeof(int));
 
