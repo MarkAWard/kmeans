@@ -11,6 +11,7 @@ typedef struct options {
     int n_centroids;
     int max_iter;
     double tol;
+    int trials;
 } options;
 
 void exit_with_help();

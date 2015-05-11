@@ -12,42 +12,26 @@ void initialize(double **data, double **centroids, options opt);
 double l2_distance(double *x1, double *x2, options opt);
 void find_nearest_centroid(double *x, double **centroids, options opt, \
                             int *idx, double *distance);
+void _kmeans(double **data, double **centroids, int *membership, \
+            double *inertia, options opt); 
 void kmeans(double **data, double **centroids, int *membership, \
-            double *inertia, options opt) ; 
+            double *inertia, options opt); 
 
 
 int main(int argc, char **argv) {
 
     srand(time(NULL));
-    int i;
-    options opt;
 
+    options opt;
     parse_command_line(argc, argv, &opt);
 
     // allocate memory for data
-    // double **data = (double**) malloc(opt.n_points * sizeof(double*));
-    // check(data);
-    // double *_data = (double*) malloc(opt.n_points * opt.dimensions * sizeof(double));
-    // check(_data);
-    // for(i = 0; i < opt.n_points; i++) {
-    //     data[i] = _data + (i * opt.dimensions);
-    // }
     double **data = (double**) alloc2d(opt.n_points, opt.dimensions);
     // read in the data file
     read_data(data, opt);
 
     // allocate centroids
-    double **centroids = (double**) malloc(opt.n_centroids * sizeof(double*));
-    check(centroids);
-    // allocate continuous memory chunks for faster sequential access
-    double *_centroids = (double*) malloc(opt.n_centroids * opt.dimensions * sizeof(double));
-    check(_centroids);
-    for(i = 0; i < opt.n_centroids; i++) {
-        centroids[i] = _centroids + (i * opt.dimensions);
-    }
-    // initialize the centriods with random data points
-    initialize(data, centroids, opt);
-
+    double **centroids = (double**) alloc2d(opt.n_centroids, opt.dimensions);
     // allocate and initialize points' cluster memberships to 0
     int *membership = (int*) calloc(opt.n_points, sizeof(int));
     check(membership);
@@ -58,10 +42,10 @@ int main(int argc, char **argv) {
     printf("\nINERTIA: %f\n", inertia);
     print_vecs(centroids, opt, "centroids");
 
-    // free(_data);
+    free(*data);
     free(data); 
+    free(*centroids);
     free(centroids);
-    free(_centroids);
     free(membership);
 
     return 0;
@@ -104,23 +88,18 @@ void find_nearest_centroid(double *x, double **centroids, options opt, \
 }
 
 
-void kmeans(double **data, double **centroids, int *membership, \
+void _kmeans(double **data, double **centroids, int *membership, \
             double *inertia, options opt) {
     
     double dist, delta = (double) opt.n_points;
     int i, center, iters = 0;
 
     // allocate for new centroids that will be computed
-    double **new_centers = (double**) malloc(opt.n_centroids * sizeof(double*));
-    check(new_centers);
-    // and initialize to 0
-    double *_new_centers = (double*) calloc(opt.n_centroids * opt.dimensions, sizeof(double));
-    check(_new_centers);
-    for(i = 0; i < opt.n_centroids; i++) {
-        new_centers[i] = _new_centers + (i * opt.dimensions);
-    }
+    double **new_centers = (double**) alloc2d(opt.n_centroids, opt.dimensions);
     // allocate array to count points in each cluster, initialize to 0
     int *count_centers = (int*) calloc(opt.n_centroids, sizeof(int));
+
+    initialize(data, centroids, opt);
 
     printf("\n");
     printf("max_iter: %d\n", opt.max_iter);
@@ -160,7 +139,7 @@ void kmeans(double **data, double **centroids, int *membership, \
         }
         memory_copy(centroids, new_centers, opt);
         // zero out new_centers and count_centers
-        memory_set(new_centers,   0, opt);
+        memory_set(new_centers, 0, opt);
         memset(count_centers, 0, opt.n_centroids * sizeof(int));
 
         iters++;
@@ -170,19 +149,26 @@ void kmeans(double **data, double **centroids, int *membership, \
         printf("inertia: %f\n", *inertia);
         print_vecs(centroids, opt, "centroids");
     }
+    free(*new_centers);
     free(new_centers);
-    free(_new_centers);
     free(count_centers);
 }
 
-// void kmeans(double **data, double **centroids, int *membership, \
-//             double *inertia, options opt) {
-//     int i;
-//     for(i = 0; i < opt.best_of; i++){
-
-//     }
-
-// }
+void kmeans(double **data, double **centroids, int *membership, \
+            double *inertia, options opt) {
+    int i;
+    double **temp_centroids = (double**) alloc2d(opt.n_centroids, opt.dimensions);
+    int *temp_membership = (int*) calloc(opt.n_points, sizeof(int));
+    double temp_inertia = DBL_MAX;
+    for(i = 0; i < opt.trials; i++){
+        _kmeans(data, temp_centroids, temp_membership, &temp_inertia, opt);
+        if(temp_inertia < *inertia) {
+            *inertia = temp_inertia;
+            memory_copy(centroids, temp_centroids, opt);
+            memcpy(membership, temp_membership, opt.n_points * sizeof(int));
+        }
+    }
+}
 
 
 

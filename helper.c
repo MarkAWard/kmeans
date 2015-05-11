@@ -18,12 +18,14 @@ void exit_with_help(){
 #define NCLUSTERS 5
 #define EPSILON 1e-4
 #define MAX_ITER 300
+#define MAX_TRIALS 25
 void parse_command_line(int argc, char **argv, options *opt) {
     // default options
     opt->sep = DELIMITER;
     opt->n_centroids = NCLUSTERS;
     opt->tol = EPSILON;
     opt->max_iter = MAX_ITER;
+    opt->trials = MAX_TRIALS;
     // parse options
     int i;
     for(i=1;i<argc;i++) {
@@ -50,6 +52,8 @@ void parse_command_line(int argc, char **argv, options *opt) {
             case 'i':
                 opt->max_iter = atoi(argv[i]);
                 break;
+            case 't':
+                opt->trials = atoi(argv[i]);
             default:
                 fprintf(stderr,"unknown option: -%c\n", argv[i-1][1]);
                 exit_with_help();
