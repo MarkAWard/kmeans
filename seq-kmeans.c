@@ -168,6 +168,9 @@ void kmeans(double **data, double **centroids, int *membership, \
             memcpy(membership, temp_membership, opt.n_points * sizeof(int));
         }
     }
+    free(*temp_centroids);
+    free(temp_centroids);
+    free(temp_membership);
 }
 
 
