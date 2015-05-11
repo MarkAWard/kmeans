@@ -1,6 +1,6 @@
 EXECUTABLES = seq-kmeans
 COMPILER = gcc
-CFLAGS = -g -Wall -lm
+CFLAGS = -g -Wall -lm -O3
 
 all: $(EXECUTABLES)
 .PHONY: all
