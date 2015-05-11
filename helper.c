@@ -60,7 +60,7 @@ void parse_command_line(int argc, char **argv, options *opt) {
 /***
 * TODO: check for n_points/sep, determine from file if not given 
 ***/
-int read_data(double **vec, options opt) {
+void read_data(double **vec, options opt) {
     char buffer[1024] ;
     char *record, *line;
     int j, i = 0;
@@ -79,8 +79,20 @@ int read_data(double **vec, options opt) {
         i++;
     }
     fclose(fstream);
-    return 0;
 }
+
+void alloc2d(double **v, int rows, int cols) {
+    v = (double**) malloc(rows * sizeof(double*));
+    check(v);
+    double *_v = (double*) malloc(rows * cols * sizeof(double));
+    check(_v);
+    int i;
+    for(i = 0; i < rows; i++) {
+        v[i] = _v + (i * cols);
+    }    
+    free(_v);
+}
+
 
 
 /***

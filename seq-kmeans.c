@@ -25,13 +25,15 @@ int main(int argc, char **argv) {
     parse_command_line(argc, argv, &opt);
 
     // allocate memory for data
-    double **data = (double**) malloc(opt.n_points * sizeof(double*));
-    check(data);
-    double *_data = (double*) malloc(opt.n_points * opt.dimensions * sizeof(double));
-    check(_data);
-    for(i = 0; i < opt.n_points; i++) {
-        data[i] = _data + (i * opt.dimensions);
-    }
+    // double **data = (double**) malloc(opt.n_points * sizeof(double*));
+    // check(data);
+    // double *_data = (double*) malloc(opt.n_points * opt.dimensions * sizeof(double));
+    // check(_data);
+    // for(i = 0; i < opt.n_points; i++) {
+    //     data[i] = _data + (i * opt.dimensions);
+    // }
+    double **data = NULL;
+    alloc2d(data, opt.n_points, opt.dimensions);
     // read in the data file
     read_data(data, opt);
 
@@ -51,23 +53,13 @@ int main(int argc, char **argv) {
     int *membership = (int*) calloc(opt.n_points, sizeof(int));
     check(membership);
 
-    // int idx;
-    // double dist;
-    // printf("\n");
-    // for (i = 0; i < opt.n_points; ++i) {
-    //     find_nearest_centroid(data[i], centroids, opt, &idx, &dist);
-    //     printf("%d, %d, %f\n", i, idx, dist); 
-    // }
-
-    // print_vecs(centroids, opt, "centroids");
-
     double inertia = DBL_MAX;
     kmeans(data, centroids, membership, &inertia, opt);
 
     printf("\nINERTIA: %f\n", inertia);
     print_vecs(centroids, opt, "centroids");
 
-    free(_data);
+    // free(_data);
     free(data); 
     free(centroids);
     free(_centroids);
@@ -172,8 +164,7 @@ void kmeans(double **data, double **centroids, int *membership, \
         memory_set(new_centers,   0, opt);
         memset(count_centers, 0, opt.n_centroids * sizeof(int));
 
-        iters++;        
-        printf("\n");
+        iters++;
         printf("iters: %d\n", iters);
         printf("delta: %f\n", delta);
         printf("eps: %f\n", delta / ((double) opt.n_points));
@@ -184,6 +175,15 @@ void kmeans(double **data, double **centroids, int *membership, \
     free(_new_centers);
     free(count_centers);
 }
+
+// void kmeans(double **data, double **centroids, int *membership, \
+//             double *inertia, options opt) {
+//     int i;
+//     for(i = 0; i < opt.best_of; i++){
+
+//     }
+
+// }
 
 
 

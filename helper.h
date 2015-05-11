@@ -15,14 +15,18 @@ typedef struct options {
 
 void exit_with_help();
 void parse_command_line(int argc, char **argv, options *opt);
-int read_data(double **vec, options opt);
+
+void read_data(double **vec, options opt);
+void alloc2d(double **v, int rows, int cols);
+void *memory_copy(double **dest, double **src, options opt);
+void *memory_set(double **dest, double c, options opt);
+
 int randint(int n);
 int In(int idx, int *arr, int end);
 void check(void *v);
 double *add(double *to, double *from, options opt);
 double *div_by(double *vec, int c, options opt);
-void *memory_copy(double **dest, double **src, options opt);
-void *memory_set(double **dest, double c, options opt);
+
 void print_vecs(double **vec, options opt, char *type);
 void print_vec(double *vec, int len);
 
