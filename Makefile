@@ -10,7 +10,7 @@ seq-kmeans: seq-kmeans.c helper.c
 
 .PHONY: test
 test:
-	./seq-kmeans -f test_data.csv -n 25 -d 3 -k 5
+	./seq-kmeans -f test_data.csv -n 25 -d 3 -k 5 -v 2
 
 .PHONY: memcheck
 memcheck:

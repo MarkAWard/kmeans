@@ -12,6 +12,7 @@ typedef struct options {
     int max_iter;
     double tol;
     int trials;
+    int verbose;
 } options;
 
 void exit_with_help();

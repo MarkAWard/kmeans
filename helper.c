@@ -19,6 +19,7 @@ void exit_with_help(){
 #define EPSILON 1e-4
 #define MAX_ITER 300
 #define MAX_TRIALS 25
+#define VERBOSE 0
 void parse_command_line(int argc, char **argv, options *opt) {
     // default options
     opt->sep = DELIMITER;
@@ -26,6 +27,7 @@ void parse_command_line(int argc, char **argv, options *opt) {
     opt->tol = EPSILON;
     opt->max_iter = MAX_ITER;
     opt->trials = MAX_TRIALS;
+    opt->verbose = VERBOSE;
     // parse options
     int i;
     for(i=1;i<argc;i++) {
@@ -54,6 +56,10 @@ void parse_command_line(int argc, char **argv, options *opt) {
                 break;
             case 't':
                 opt->trials = atoi(argv[i]);
+                break;
+            case 'v':
+                opt->verbose = atoi(argv[i]);
+                break;
             default:
                 fprintf(stderr,"unknown option: -%c\n", argv[i-1][1]);
                 exit_with_help();

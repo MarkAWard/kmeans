@@ -39,8 +39,10 @@ int main(int argc, char **argv) {
     double inertia = DBL_MAX;
     kmeans(data, centroids, membership, &inertia, opt);
 
-    printf("\nINERTIA: %f\n", inertia);
-    print_vecs(centroids, opt, "centroids");
+    if(opt.verbose > 0) { 
+        printf("\nINERTIA: %f\n", inertia);
+        print_vecs(centroids, opt, "centroids");
+    }
 
     free(*data);
     free(data); 
@@ -101,16 +103,7 @@ void _kmeans(double **data, double **centroids, int *membership, \
     int *count_centers = (int*) calloc(opt.n_centroids, sizeof(int));
 
     initialize(data, centroids, opt);
-
-    printf("\n");
-    printf("max_iter: %d\n", opt.max_iter);
-    printf("tol: %f\n", opt.tol);
     
-    printf("\n");
-    printf("iters: %d\n", iters);
-    printf("delta: %f\n", delta);
-    printf("eps: %f\n", delta / ((double) opt.n_points));
-    print_vecs(centroids, opt, "centroids");
 
     while (delta / ((double) opt.n_points) > opt.tol && iters < opt.max_iter) {
         delta = 0.0;
@@ -125,7 +118,6 @@ void _kmeans(double **data, double **centroids, int *membership, \
             add(new_centers[center], data[i], opt);
             count_centers[center]++; 
         }
-        printf("\n");
         for(i = 0; i < opt.n_centroids; i++) {
             if(count_centers[i] == 0) {
                 // pick a random point, not sure if this is the best option
@@ -144,11 +136,12 @@ void _kmeans(double **data, double **centroids, int *membership, \
         memset(count_centers, 0, opt.n_centroids * sizeof(int));
 
         iters++;
-        printf("iters: %d\n", iters);
-        printf("delta: %f\n", delta);
-        printf("eps: %f\n", delta / ((double) opt.n_points));
-        printf("inertia: %f\n", *inertia);
-        print_vecs(centroids, opt, "centroids");
+        if(opt.verbose > 1) {
+            printf("\n\titers: %d\n", iters);
+            printf("\tdelta: %d\n", (int)   delta);
+            printf("\teps: %f\n", delta / ((double) opt.n_points));
+            printf("\tinertia: %f\n", *inertia);
+        }
     }
     free(*new_centers);
     free(new_centers);
@@ -162,6 +155,7 @@ void kmeans(double **data, double **centroids, int *membership, \
     int *temp_membership = (int*) calloc(opt.n_points, sizeof(int));
     double temp_inertia = DBL_MAX;
     for(i = 0; i < opt.trials; i++){
+        if(opt.verbose > 1) printf("\nTRIAL %d\n", i+1);
         _kmeans(data, temp_centroids, temp_membership, &temp_inertia, opt);
         if(temp_inertia < *inertia) {
             *inertia = temp_inertia;
