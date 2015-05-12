@@ -5,7 +5,7 @@
 #include <mpi.h>
 
 
-double **parprocess(MPI_File *in, double **vec, int *n_rows, int *dimensions, const int rank, const int size, const int overlap) {
+double **parprocess(MPI_File *in, int *n_rows, int *dimensions, const int rank, const int size, const int overlap) {
 
   MPI_Offset globalstart;
   int mysize;
@@ -74,7 +74,7 @@ double **parprocess(MPI_File *in, double **vec, int *n_rows, int *dimensions, co
   printf("%d x %d\n", *n_rows, *dimensions);
 
   // allocate the appropriate size for this process
-  vec = (double**) malloc(*n_rows * sizeof(double*));
+  double **vec = (double**) malloc(*n_rows * sizeof(double*));
   double *_v = (double*) malloc(*n_rows * *dimensions * sizeof(double));
   for(i = 0; i < *n_rows; i++) {
     vec[i] = _v + (i * *dimensions);
@@ -137,9 +137,8 @@ int main( int argc, char **argv) {
   }
 
   int i, r;
-  double **data = NULL;
   int rows, cols;
-  data = parprocess(&filename, data, &rows, &cols, mpi_rank, mpi_size, overlap);
+  double **data = parprocess(&filename, &rows, &cols, mpi_rank, mpi_size, overlap);
 
   for(r=0; r < mpi_size; r++) {
     MPI_Barrier(MPI_COMM_WORLD);
