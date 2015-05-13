@@ -124,7 +124,7 @@ void initialize(double **data, double **centroids, int *ppp, int rank, int size,
     while(1) {
       MPI_Recv(&get_point, 1, MPI_INT, 0, 999, MPI_COMM_WORLD, &status);
       if(get_point != -1)
-        MPI_Send(&data[get_point], opt.dimensions, MPI_DOUBLE, 0, 999, MPI_COMM_WORLD);
+        MPI_Send(data[get_point], opt.dimensions, MPI_DOUBLE, 0, 999, MPI_COMM_WORLD);
       else break;
     }
   }
