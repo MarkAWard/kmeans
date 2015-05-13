@@ -2,7 +2,7 @@
 #include <stdlib.h> 
 #include <string.h> // strsep
 #include <mpi.h>
-
+#include "helper.h"
 
 double **mpi_read_data(MPI_File *in, int *n_rows, int *dimensions, const int rank, const int size, const int overlap) {
 
@@ -34,6 +34,7 @@ double **mpi_read_data(MPI_File *in, int *n_rows, int *dimensions, const int ran
 
     /* allocate memory */
     tofree = chunk = malloc( (mysize + 1)*sizeof(char));
+    check(tofree);
 
     /* everyone reads in their part */
     MPI_File_read_at_all(*in, globalstart, chunk, mysize, MPI_CHAR, MPI_STATUS_IGNORE);
@@ -74,7 +75,9 @@ double **mpi_read_data(MPI_File *in, int *n_rows, int *dimensions, const int ran
 
   // allocate the appropriate size for this process
   double **vec = (double**) malloc(*n_rows * sizeof(double*));
+  check(vec);
   double *_v = (double*) malloc(*n_rows * *dimensions * sizeof(double));
+  check(_v);
   for(i = 0; i < *n_rows; i++) {
     vec[i] = _v + (i * *dimensions);
   } 
