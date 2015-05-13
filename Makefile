@@ -24,11 +24,15 @@ seq-test:
 
 .PHONY: mpi-test
 mpi-test:
-	mpirun -n 4 ./mpi-kmeans test_data.csv
+	mpirun -n 4 ./mpi-kmeans -f test_data.csv -k 5
 
 .PHONY: seq-memcheck
 seq-memcheck:
 	valgrind --leak-check=full ./seq-kmeans -f test_data.csv -n 25 -d 3 -k 5
+
+.PHONY: mpi-memcheck
+mpi-memcheck:
+	mpirun -n 4 valgrind --leak-check=full ./mpi-kmeans -f test_data.csv -k 5
 
 .PHONY: clean
 clean:
