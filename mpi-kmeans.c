@@ -36,7 +36,7 @@ int main( int argc, char **argv) {
   MPI_Allreduce(&rows, &total_rows, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
   opt.n_points = total_rows;
   opt.dimensions = cols;
-  if(mpi_rank == 0) printf("Total rows: %d\n", opt.n_points);
+  if(mpi_rank == 0 && opt.verbose > 1) printf("Total rows: %d\n", opt.n_points);
 
   // allocate centroids, everyone gets their own copy
   double **centroids = (double**) alloc2d(opt.n_centroids, opt.dimensions);
@@ -49,7 +49,7 @@ int main( int argc, char **argv) {
 
   for(r=0; r < mpi_size; r++) {
     MPI_Barrier(MPI_COMM_WORLD);
-    if(mpi_rank == r) {
+    if(mpi_rank == r && opt.verbose > 1) {
       for(i=0; i < rows; i++) {
         printf("proc %d: %d --- ", mpi_rank, i);
         print_vec(data[i], cols);

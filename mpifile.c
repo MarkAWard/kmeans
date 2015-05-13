@@ -70,7 +70,7 @@ double **mpi_read_data(MPI_File *in, int *n_rows, int *dimensions, const int ran
     if(*n_rows == 0 && chunk[i] == ',') (*dimensions)++;
   }
   (*n_rows)++; (*dimensions)++;
-  printf("%d x %d\n", *n_rows, *dimensions);
+  //  printf("%d x %d\n", *n_rows, *dimensions);
 
   // allocate the appropriate size for this process
   double **vec = (double**) malloc(*n_rows * sizeof(double*));

@@ -24,7 +24,7 @@ seq-test:
 
 .PHONY: mpi-test
 mpi-test:
-	mpirun -n 4 ./mpi-kmeans -f test_data.csv -k 5
+	mpirun -n 4 ./mpi-kmeans -f test_data.csv -k 5 -v 2
 
 .PHONY: seq-memcheck
 seq-memcheck:
