@@ -60,7 +60,7 @@ int main( int argc, char **argv) {
   int *membership = (int*) calloc(rows, sizeof(int));
   check(membership);
 
-//  double inertia = DBL_MAX;
+  double inertia = DBL_MAX;
 
   initialize(data, centroids, points_per_proc, mpi_rank, mpi_size, opt);
 
@@ -74,6 +74,12 @@ int main( int argc, char **argv) {
       }
     }
   }
+
+  if(mpi_rank == 0 && opt.verbose > 0) { 
+    printf("\nINERTIA: %f\n", inertia);
+    print_vecs(centroids, opt, "centroids");
+  }
+
 
   MPI_File_close(&filename);
 
@@ -112,7 +118,7 @@ void initialize(double **data, double **centroids, int *ppp, int rank, int size,
         }
         printf("%d owned by %d at %d ", init[i], owner, idx);
         print_vec(point, opt.dimensions);
-        // memcpy(centroids[i], data[idx], opt.dimensions * sizeof(double));
+        memcpy(centroids[i], point, opt.dimensions * sizeof(double));
         point = tofree;
     }
     idx = -1;
