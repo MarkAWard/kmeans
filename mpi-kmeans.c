@@ -98,6 +98,7 @@ void initialize(double **data, double **centroids, int *ppp, int rank, int size,
     check(init);
     double *point = (double*) malloc(opt.dimensions * sizeof(double));
     check(point);
+    double *tofree = point;
     for(i = 0; i < opt.n_centroids; i++){
         while(In(idx = randint(opt.n_points), init, i));
         init[i] = idx;
@@ -112,12 +113,13 @@ void initialize(double **data, double **centroids, int *ppp, int rank, int size,
         printf("%d owned by %d at %d ", init[i], owner, idx);
         print_vec(point, opt.dimensions);
         // memcpy(centroids[i], data[idx], opt.dimensions * sizeof(double));
+        point = tofree;
     }
     idx = -1;
     for(i = 1; i < size; i++)
       MPI_Send(&idx, 1, MPI_INT, i, 999, MPI_COMM_WORLD);
     free(init);
-    free(point);
+    free(tofree);
   }
   else {
     int get_point;
