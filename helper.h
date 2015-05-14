@@ -13,6 +13,7 @@ typedef struct options {
     double tol;
     int trials;
     int verbose;
+    int local_rows;
 } options;
 
 void exit_with_help();
@@ -30,5 +31,6 @@ double *div_by(double *vec, int c, options opt);
 
 void print_vecs(double **vec, options opt, char *type);
 void print_vec(double *vec, int len);
+void print_int_vec(int *vec, int len);
 
 #endif

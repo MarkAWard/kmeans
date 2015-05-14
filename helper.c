@@ -21,6 +21,7 @@ void exit_with_help(){
 #define MAX_ITER 300
 #define MAX_TRIALS 25
 #define VERBOSE 0
+#define LOCROWS 0
 void parse_command_line(int argc, char **argv, options *opt) {
     // default options
     opt->sep = DELIMITER;
@@ -31,6 +32,7 @@ void parse_command_line(int argc, char **argv, options *opt) {
     opt->max_iter = MAX_ITER;
     opt->trials = MAX_TRIALS;
     opt->verbose = VERBOSE;
+    opt->local_rows = LOCROWS;
     // parse options
     int i;
     for(i=1;i<argc;i++) {
@@ -191,6 +193,13 @@ void print_vec(double *vec, int len) {
     printf("\n");
 }
 
+void print_int_vec(int *vec, int len) {
+    int j;
+    for(j = 0; j < len; j++) {
+        printf("%d ", vec[j]);
+    }
+    printf("\n");
+}
 
 
 
