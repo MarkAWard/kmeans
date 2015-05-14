@@ -17,6 +17,8 @@ void find_nearest_centroid(double *x, double **centroids, options opt, \
                             int *idx, double *distance);
 void _kmeans(double **data, double **centroids, int *membership, \
             double *inertia, int rank, int size, int *ppp, options opt);
+void kmeans(double **data, double **centroids, int *membership, \
+            double *inertia, int rank, int size, int *ppp, options opt);
 
 int main( int argc, char **argv) {
 
@@ -82,20 +84,12 @@ int main( int argc, char **argv) {
 
   double inertia = DBL_MAX;
 
-  _kmeans(data, centroids, membership, &inertia, mpi_rank, mpi_size, points_per_proc, opt);
+  kmeans(data, centroids, membership, &inertia, mpi_rank, mpi_size, points_per_proc, opt);
 
   if(mpi_rank == 0 && opt.verbose > 0) { 
     printf("\nINERTIA: %e\n", inertia);
     print_vecs(centroids, opt, "centroids");
   }
-
-  int center;
-  double distance;
-  for(i = 0; i < rows; i++){
-    find_nearest_centroid(data[i], centroids, opt, &center, &distance);
-    printf("proc %d: %d --- %d %f\n", mpi_rank, i, center, distance);
-  }  
-
 
   MPI_File_close(&filename);
 
@@ -317,6 +311,27 @@ void _kmeans(double **data, double **centroids, int *membership, \
 } 
 
 
+void kmeans(double **data, double **centroids, int *membership, \
+            double *inertia, int rank, int size, int *ppp, options opt) {
+  int i;
+  double **temp_centroids = (double**) alloc2d(opt.n_centroids, opt.dimensions);
+  int *temp_membership = (int*) calloc(opt.n_points, sizeof(int));
+  check(temp_membership);
+  double temp_inertia = DBL_MAX;
+  for(i = 0; i < opt.trials; i++){
+    MPI_Barrier(MPI_COMM_WORLD);
+    if(opt.verbose > 1 && rank == 0) printf("\nTRIAL %d\n", i+1);
+    _kmeans(data, temp_centroids, temp_membership, &temp_inertia, rank, size, ppp, opt);
+    if(temp_inertia < *inertia) {
+      *inertia = temp_inertia;
+      memcpy(*centroids, *temp_centroids, opt.n_centroids * opt.dimensions * sizeof(double));
+      memcpy(membership, temp_membership, opt.n_points * sizeof(int));
+    }
+  }
+  free(*temp_centroids);
+  free(temp_centroids);
+  free(temp_membership);
+}
 
 
 
