@@ -69,7 +69,7 @@ void initialize(double **data, double **centroids, options opt) {
 double l2_distance(double *x1, double *x2, options opt) {
     int i;
     double dist = 0.0;
-    for (i = 0; i < opt.dimensions; ++i) {
+    for (i = 0; i < opt.dimensions; i++) {
         dist += SQR(x1[i] - x2[i]); 
     }
     return sqrt(dist);
