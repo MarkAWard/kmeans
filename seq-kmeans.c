@@ -154,6 +154,7 @@ void kmeans(double **data, double **centroids, int *membership, \
     int i;
     double **temp_centroids = (double**) alloc2d(opt.n_centroids, opt.dimensions);
     int *temp_membership = (int*) calloc(opt.n_points, sizeof(int));
+    check(temp_membership);
     double temp_inertia = DBL_MAX;
     for(i = 0; i < opt.trials; i++){
         if(opt.verbose > 1) printf("\nTRIAL %d\n", i+1);
