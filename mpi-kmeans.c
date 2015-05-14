@@ -77,9 +77,9 @@ int main( int argc, char **argv) {
 
   // allocate centroids, everyone gets their own copy
   double **centroids = (double**) alloc2d(opt.n_centroids, opt.dimensions);
-  // allocate and initialize points' cluster memberships to 0
+  // allocate  cluster memberships
   // only track the ones this process is responsible for
-  int *membership = (int*) calloc(rows, sizeof(int));
+  int *membership = (int*) malloc(opt.local_rows * sizeof(int));
   check(membership);
 
   double inertia = DBL_MAX;
@@ -126,8 +126,8 @@ void initialize(double **data, double **centroids, int *ppp, int rank, int size,
         else{
           point = data[idx];
         }
-        printf("%d owned by %d at %d ", init[i], owner, idx);
-        print_vec(point, opt.dimensions);
+        // printf("%d owned by %d at %d ", init[i], owner, idx);
+        // print_vec(point, opt.dimensions);
         memcpy(centroids[i], point, opt.dimensions * sizeof(double));
         point = tofree;
     }
@@ -188,7 +188,7 @@ void _kmeans(double **data, double **centroids, int *membership, \
 
   MPI_Status status;
 
-    double dist, total_inertia, total_delta, delta = (double) opt.n_points;
+  double dist, total_inertia, total_delta, delta = (double) opt.n_points;
   int i, center, iters = 0;
 
   // allocate for new centroids that will be computed
@@ -233,15 +233,12 @@ void _kmeans(double **data, double **centroids, int *membership, \
         if(count_centers[i] == 0) {
           // process 0 is in charge of getting the new point
           if(rank == 0) {
-            // printf("\nSHIT HERE\n");
             int idx = randint(opt.n_points);
             int owner = get_owner(&idx, ppp); 
             if(owner != 0) {
               // get the point from the other process
-              // printf("SHIT before\n");
               MPI_Send(&idx, 1, MPI_INT, owner, 999, MPI_COMM_WORLD);
               MPI_Recv(point, opt.dimensions, MPI_DOUBLE, owner, 999, MPI_COMM_WORLD, &status);
-              // printf("SHIT after\n");
             } 
             else {
               // I own the point dont ask anyone else
@@ -253,27 +250,19 @@ void _kmeans(double **data, double **centroids, int *membership, \
             idx = -1;
             for(i = 1; i < size; i++)
               MPI_Send(&idx, 1, MPI_INT, i, 999, MPI_COMM_WORLD);
-            // printf("SHIT sent -1\n");
           }
           // other processes send point if needed
           else {
             int get_point;
             while(1) {
               MPI_Recv(&get_point, 1, MPI_INT, 0, 999, MPI_COMM_WORLD, &status);
-              if(get_point != -1) {
-                // printf("SHIT %d is sending %d\n", rank, get_point);
+              if(get_point != -1) 
                 MPI_Send(data[get_point], opt.dimensions, MPI_DOUBLE, 0, 999, MPI_COMM_WORLD);
-              }
-              else {
-                // printf("SHIT get here %d\n", rank);
-                break;
-             }
+              else break;
             }
           }
-          // printf("SHIT we all done\n");
           // broadcast this new point to everyone
           MPI_Bcast(centroids[i], opt.dimensions, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-          // printf("SHIT broadcasted\n");
           // add to delta to ensure we dont stop after this
           delta += opt.tol * opt.local_rows + 1.0;
         }
@@ -315,7 +304,7 @@ void kmeans(double **data, double **centroids, int *membership, \
             double *inertia, int rank, int size, int *ppp, options opt) {
   int i;
   double **temp_centroids = (double**) alloc2d(opt.n_centroids, opt.dimensions);
-  int *temp_membership = (int*) calloc(opt.n_points, sizeof(int));
+  int *temp_membership = (int*) calloc(opt.local_rows, sizeof(int));
   check(temp_membership);
   double temp_inertia = DBL_MAX;
   for(i = 0; i < opt.trials; i++){
@@ -325,7 +314,7 @@ void kmeans(double **data, double **centroids, int *membership, \
     if(temp_inertia < *inertia) {
       *inertia = temp_inertia;
       memcpy(*centroids, *temp_centroids, opt.n_centroids * opt.dimensions * sizeof(double));
-      memcpy(membership, temp_membership, opt.n_points * sizeof(int));
+      memcpy(membership, temp_membership, opt.local_rows * sizeof(int));
     }
   }
   free(*temp_centroids);
