@@ -22,9 +22,17 @@ mpi-kmeans: mpi-kmeans.c mpifile.c helper.c
 seq-test:
 	./seq-kmeans -f test_data.csv -n 25 -d 3 -k 5 -v 2
 
+.PHONY: seq-blobs
+seq-blobs:
+	./seq-kmeans -f blobs_10000_10_k20.csv -k 20 -t 200 -v 1
+
 .PHONY: mpi-test
 mpi-test:
 	mpirun -n 4 ./mpi-kmeans -f test_data.csv -k 5 -v 2
+
+.PHONY: mpi-blobs
+mpi-blobs:
+	mpirun -n 4 ./mpi-kmeans -f blobs_10000_10_k20.csv -k 20 -t 200 -v 1
 
 .PHONY: seq-memcheck
 seq-memcheck:
