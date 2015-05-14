@@ -210,7 +210,7 @@ void _kmeans(double **data, double **centroids, int *membership, \
   MPI_Bcast(*centroids, opt.n_centroids*opt.dimensions, MPI_DOUBLE, 0, MPI_COMM_WORLD);
     
   while (delta / ((double) opt.n_points) > opt.tol && iters < opt.max_iter) {
-    MPI_Barrier(MPI_COMM_WORLD);
+    // MPI_Barrier(MPI_COMM_WORLD);
     delta = 0.0;
     *inertia = 0.0;
     for(i = 0; i < opt.local_rows; i++){
@@ -231,36 +231,42 @@ void _kmeans(double **data, double **centroids, int *membership, \
 
     for(i = 0; i < opt.n_centroids; i++) {
         if(count_centers[i] == 0) {
-          // process 0 is in charge of getting the new point
-          if(rank == 0) {
-            int idx = randint(opt.n_points);
-            int owner = get_owner(&idx, ppp); 
-            if(owner != 0) {
-              // get the point from the other process
-              MPI_Send(&idx, 1, MPI_INT, owner, 999, MPI_COMM_WORLD);
-              MPI_Recv(point, opt.dimensions, MPI_DOUBLE, owner, 999, MPI_COMM_WORLD, &status);
-            } 
-            else {
-              // I own the point dont ask anyone else
-              point = data[idx];
-            }
-            memcpy(centroids[i], point, opt.dimensions * sizeof(double));
-            point = tofree;
-            // let the other processors know we are done
-            idx = -1;
-            for(i = 1; i < size; i++)
-              MPI_Send(&idx, 1, MPI_INT, i, 999, MPI_COMM_WORLD);
+
+          if(rank == 0){
+            add(centroids[i], data[randint(opt.local_rows)], opt);
           }
-          // other processes send point if needed
-          else {
-            int get_point;
-            while(1) {
-              MPI_Recv(&get_point, 1, MPI_INT, 0, 999, MPI_COMM_WORLD, &status);
-              if(get_point != -1) 
-                MPI_Send(data[get_point], opt.dimensions, MPI_DOUBLE, 0, 999, MPI_COMM_WORLD);
-              else break;
-            }
-          }
+
+          // // process 0 is in charge of getting the new point
+          // if(rank == 0) {
+          //   int idx = randint(opt.n_points);
+          //   int owner = get_owner(&idx, ppp); 
+          //   if(owner != 0) {
+          //     // get the point from the other process
+          //     MPI_Send(&idx, 1, MPI_INT, owner, 999, MPI_COMM_WORLD);
+          //     MPI_Recv(point, opt.dimensions, MPI_DOUBLE, owner, 999, MPI_COMM_WORLD, &status);
+          //   } 
+          //   else {
+          //     // I own the point dont ask anyone else
+          //     point = data[idx];
+          //   }
+          //   memcpy(centroids[i], point, opt.dimensions * sizeof(double));
+          //   point = tofree;
+          //   // let the other processors know we are done
+          //   idx = -1;
+          //   for(i = 1; i < size; i++)
+          //     MPI_Send(&idx, 1, MPI_INT, i, 999, MPI_COMM_WORLD);
+          // }
+          // // other processes send point if needed
+          // else {
+          //   int get_point;
+          //   while(1) {
+          //     MPI_Recv(&get_point, 1, MPI_INT, 0, 999, MPI_COMM_WORLD, &status);
+          //     if(get_point != -1) 
+          //       MPI_Send(data[get_point], opt.dimensions, MPI_DOUBLE, 0, 999, MPI_COMM_WORLD);
+          //     else break;
+          //   }
+          // }
+        
           // broadcast this new point to everyone
           MPI_Bcast(centroids[i], opt.dimensions, MPI_DOUBLE, 0, MPI_COMM_WORLD);
           // add to delta to ensure we dont stop after this
@@ -308,7 +314,7 @@ void kmeans(double **data, double **centroids, int *membership, \
   check(temp_membership);
   double temp_inertia = DBL_MAX;
   for(i = 0; i < opt.trials; i++){
-    MPI_Barrier(MPI_COMM_WORLD);
+    // MPI_Barrier(MPI_COMM_WORLD);
     if(opt.verbose > 1 && rank == 0) printf("\nTRIAL %d\n", i+1);
     _kmeans(data, temp_centroids, temp_membership, &temp_inertia, rank, size, ppp, opt);
     if(temp_inertia < *inertia) {
