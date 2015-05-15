@@ -26,7 +26,6 @@ int main( int argc, char **argv) {
 
   int mpi_rank, mpi_size;
   int i, r, rows, cols, total_rows, err;
-  const int overlap = 100;
   int *points_per_proc, *buffer;
   MPI_File filename;
   
@@ -44,7 +43,7 @@ int main( int argc, char **argv) {
     exit(1);
   }
 
-  double **data = mpi_read_data(&filename, &rows, &cols, mpi_rank, mpi_size, overlap);
+  double **data = mpi_read_data(&filename, &rows, &cols, mpi_rank, mpi_size, opt.overlap);
   points_per_proc = (int*) calloc(mpi_size, sizeof(int));
   check(points_per_proc); 
   buffer = (int*) calloc(mpi_size, sizeof(int));
@@ -186,7 +185,7 @@ void find_nearest_centroid(double *x, double **centroids, options opt, \
 void _kmeans(double **data, double **centroids, int *membership, \
             double *inertia, int rank, int size, int *ppp, options opt) {
 
-  MPI_Status status;
+  //MPI_Status status;
 
   double dist, total_inertia, total_delta, delta = (double) opt.n_points;
   int i, center, iters = 0;

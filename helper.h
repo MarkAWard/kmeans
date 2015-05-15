@@ -14,6 +14,7 @@ typedef struct options {
     int trials;
     int verbose;
     int local_rows;
+    int overlap;
 } options;
 
 void exit_with_help();

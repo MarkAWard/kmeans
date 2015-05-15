@@ -22,6 +22,7 @@ void exit_with_help(){
 #define MAX_TRIALS 25
 #define VERBOSE 0
 #define LOCROWS 0
+#define OVERLAP 100
 void parse_command_line(int argc, char **argv, options *opt) {
     // default options
     opt->sep = DELIMITER;
@@ -33,6 +34,7 @@ void parse_command_line(int argc, char **argv, options *opt) {
     opt->trials = MAX_TRIALS;
     opt->verbose = VERBOSE;
     opt->local_rows = LOCROWS;
+    opt->overlap = OVERLAP;
     // parse options
     int i;
     for(i=1;i<argc;i++) {
@@ -65,6 +67,9 @@ void parse_command_line(int argc, char **argv, options *opt) {
             case 'v':
                 opt->verbose = atoi(argv[i]);
                 break;
+	    case 'b':
+	        opt->overlap = atoi(argv[i]);
+	        break;
             default:
                 fprintf(stderr,"unknown option: -%c\n", argv[i-1][1]);
                 exit_with_help();
