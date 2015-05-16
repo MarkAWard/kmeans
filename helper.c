@@ -2,27 +2,35 @@
 #include <string.h>
 #include "helper.h"
 
-/***
-* TODO: provide real help menu
-***/
-void exit_with_help(){
-    printf("HELP HELP HELPPPP!!\n");
+void exit_with_help(char *argv0) {
+    char *help =
+    "Usage: %s [options] -f filename -k num_clusters\n"
+    "       -f filename     : file containing data to be clustered\n"
+    "       -k num_clusters : the number of clusters to find [5]\n"
+    "       -s delimiter    : file delimiter [,]\n"
+    "       -n num_points   : number of points in file to read (optional)\n"
+    "       -d num_dimens   : number of dimensions of input data (optional)\n"
+    "       -e tolerance    : minimum fraction of points that don't change clusters to end kmeans loop [1e-5]\n"
+    "       -i max_iter     : maximum number of iterations within kmeans [100]\n"
+    "       -t num_trials   : number of kmeans trials to perform to find best clustering [25]\n"
+    "       -v verbosity    : control amount of printing 0, 1, 2 [0]\n"
+    "       -b buf_overlap  : set to number of characters per line for mpi file reading [100]\n"
+    "       -h              : show this help menu\n";
+    fprintf(stderr, help, argv0);
     exit(-1);
 }
 
-/***
-* TODO: defaults for n_points/sep to -1
-*		add the other options
-***/
+// define defaults
 #define DELIMITER ","
 #define DIM -1
 #define NCLUSTERS 5
 #define EPSILON 1e-4
-#define MAX_ITER 300
+#define MAX_ITER 100
 #define MAX_TRIALS 25
 #define VERBOSE 0
 #define LOCROWS 0
 #define OVERLAP 100
+#define HELP 0
 void parse_command_line(int argc, char **argv, options *opt) {
     // default options
     opt->sep = DELIMITER;
@@ -39,21 +47,22 @@ void parse_command_line(int argc, char **argv, options *opt) {
     int i;
     for(i=1;i<argc;i++) {
         if(argv[i][0] != '-') break;
-        if(++i>=argc) exit_with_help();
+        if(++i>=argc) exit_with_help(argv[0]);
         switch(argv[i-1][1]) {
             case 'f':
                 opt->filename = argv[i];
+                break;
+            case 'k':
+                opt->n_centroids = atoi(argv[i]);
+                break;
+            case 's':
+                opt->sep = argv[i];
                 break;
             case 'n':
                 opt->n_points = atoi(argv[i]);
                 break;
             case 'd':
                 opt->dimensions = atoi(argv[i]);
-                break;
-            case 's':
-                opt->sep = argv[i];
-            case 'k':
-                opt->n_centroids = atoi(argv[i]);
                 break;
             case 'e':
                 opt->tol = atoi(argv[i]);
@@ -67,12 +76,15 @@ void parse_command_line(int argc, char **argv, options *opt) {
             case 'v':
                 opt->verbose = atoi(argv[i]);
                 break;
-	    case 'b':
-	        opt->overlap = atoi(argv[i]);
-	        break;
+           case 'b':
+                opt->overlap = atoi(argv[i]);
+                break;
+            case 'h':
+                exit_with_help(argv[0]);
+                break;
             default:
                 fprintf(stderr,"unknown option: -%c\n", argv[i-1][1]);
-                exit_with_help();
+                exit_with_help(argv[0]);
         }
     }
     if(i < argc) opt->filename = argv[i];

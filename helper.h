@@ -17,7 +17,7 @@ typedef struct options {
     int overlap;
 } options;
 
-void exit_with_help();
+void exit_with_help(char *argv0);
 void parse_command_line(int argc, char **argv, options *opt);
 
 void read_data(double **vec, options opt);
