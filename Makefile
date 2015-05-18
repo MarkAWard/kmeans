@@ -24,7 +24,7 @@ seq-test:
 
 .PHONY: seq-blobs
 seq-blobs:
-	./seq-kmeans -f blobs_10000_10_k20.csv -k 20 -t 200 -v 1
+	./seq-kmeans -f blobs_10000_10_k20.csv -k 20 -t 200 
 
 .PHONY: mpi-test
 mpi-test:
@@ -32,7 +32,7 @@ mpi-test:
 
 .PHONY: mpi-blobs
 mpi-blobs:
-	mpirun -n 4 ./mpi-kmeans -f blobs_10000_10_k20.csv -k 20 -t 200 -v 1
+	mpirun -n 4 ./mpi-kmeans -f blobs_10000_10_k20.csv -k 20 -t 200 
 
 .PHONY: seq-memcheck
 seq-memcheck:
