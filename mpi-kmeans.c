@@ -6,22 +6,35 @@
 #include <mpi.h>
 #include "helper.h"
 #include "mpifile.h"
+#include "util.h"
 
 #define SQR(x) (x)*(x)
 
-void initialize(double **data, double **centroids, int *ppp, int rank, int size, options opt);
+typedef struct mytimer
+{
+    double total_time;
+    double init_time;
+    double comp_time;
+    double comm_time;
+} mytimer;
+
+double initialize(double **data, double **centroids, int *ppp, int rank, int size, options opt);
 int get_owner(int *point_id, int *ppp);
 double distance(double *x1, double *x2, options opt);
 void find_nearest_centroid(double *x, double **centroids, options opt, \
                             int *idx, double *dist);
-void _kmeans(double **data, double **centroids, int *membership, \
-            double *inertia, int rank, int size, int *ppp, options opt);
-void kmeans(double **data, double **centroids, int *membership, \
-            double *inertia, int rank, int size, int *ppp, options opt);
+int _kmeans(double **data, double **centroids, int *membership, \
+            double *inertia, int rank, int size, int *ppp, mytimer *t, options opt);
+int kmeans(double **data, double **centroids, int *membership, \
+            double *inertia, int rank, int size, int *ppp, mytimer *t, options opt);
 
 int main( int argc, char **argv) {
 
   srand(time(NULL));
+
+  mytimer timer;
+  timer.total_time = timer.init_time = timer.comp_time = timer.comm_time = 0.0;
+  timestamp_type time_s, time_e;
 
   int mpi_rank, mpi_size;
   int i, r, rows, cols, total_rows, err;
@@ -65,7 +78,7 @@ int main( int argc, char **argv) {
   }
   for(r=0; r < mpi_size; r++) {
     MPI_Barrier(MPI_COMM_WORLD);
-    if(mpi_rank == r && opt.verbose > 1) {
+    if(mpi_rank == r && opt.verbose > 2) {
       for(i=0; i < rows; i++) {
         printf("proc %d: %d --- ", mpi_rank, i);
         print_vec(data[i], cols);
@@ -81,12 +94,24 @@ int main( int argc, char **argv) {
   check(membership);
 
   double inertia = DBL_MAX;
-
-  kmeans(data, centroids, membership, &inertia, mpi_rank, mpi_size, points_per_proc, opt);
+  int total_iterations = 0;
+  get_timestamp(&time_s);
+  total_iterations = kmeans(data, centroids, membership, &inertia, mpi_rank, mpi_size, points_per_proc, &timer, opt);
+  get_timestamp(&time_e);
+  timer.total_time = timestamp_diff_in_seconds(time_s, time_e);
 
   if(mpi_rank == 0 && opt.verbose > 0) { 
-    printf("\nINERTIA: %e\n", inertia);
     print_vecs(centroids, opt, "centroids");
+  }
+
+  if(mpi_rank == 0) {
+    printf("\nMPI K-MEANS\n");
+    printf("Inertia: %f\n", inertia);
+    printf("Total Iterations: %d\n", total_iterations);
+    printf("Runtime: %f\n", timer.total_time);
+    printf("Initialization time: %f\n", timer.init_time);
+    printf("Computation time: %f\n", timer.comp_time);
+    printf("Communication time: %f\n", timer.comm_time);
   }
 
   MPI_File_close(&filename);
@@ -104,22 +129,31 @@ int main( int argc, char **argv) {
 }
 
 
-void initialize(double **data, double **centroids, int *ppp, int rank, int size, options opt) {
+double initialize(double **data, double **centroids, int *ppp, int rank, int size, options opt) {
   MPI_Status status;
+  double comm_time = 0.0;
+
   if(rank == 0) {
+    timestamp_type comm_s, comm_e;  
     int i, idx, owner;
+
     int *init = (int*) malloc(opt.n_centroids * sizeof(int));
     check(init);
+
     double *point = (double*) malloc(opt.dimensions * sizeof(double));
     check(point);
     double *tofree = point;
+
     for(i = 0; i < opt.n_centroids; i++){
         while(In(idx = randint(opt.n_points), init, i));
         init[i] = idx;
         owner = get_owner(&idx, ppp);
         if(owner != 0) {
+          get_timestamp(&comm_s);
           MPI_Send(&idx, 1, MPI_INT, owner, 999, MPI_COMM_WORLD);
           MPI_Recv(point, opt.dimensions, MPI_DOUBLE, owner, 999, MPI_COMM_WORLD, &status);
+          get_timestamp(&comm_e);
+          comm_time += timestamp_diff_in_seconds(comm_s, comm_e);
         } 
         else{
           point = data[idx];
@@ -130,8 +164,12 @@ void initialize(double **data, double **centroids, int *ppp, int rank, int size,
         point = tofree;
     }
     idx = -1;
+    get_timestamp(&comm_s);
     for(i = 1; i < size; i++)
       MPI_Send(&idx, 1, MPI_INT, i, 999, MPI_COMM_WORLD);
+    get_timestamp(&comm_e);
+    comm_time += timestamp_diff_in_seconds(comm_s, comm_e);
+    
     free(init);
     free(tofree);
   }
@@ -144,6 +182,7 @@ void initialize(double **data, double **centroids, int *ppp, int rank, int size,
       else break;
     }
   }
+  return comm_time;
 }
 
 int get_owner(int *point_id, int *ppp) {
@@ -181,11 +220,13 @@ void find_nearest_centroid(double *x, double **centroids, options opt, \
 
 
 
-void _kmeans(double **data, double **centroids, int *membership, \
-            double *inertia, int rank, int size, int *ppp, options opt) {
+int _kmeans(double **data, double **centroids, int *membership, \
+            double *inertia, int rank, int size, int *ppp, mytimer *t, options opt) {
 
-  //MPI_Status status;
-
+  timestamp_type time_is, time_ie;
+  timestamp_type time_cs, time_ce;
+  timestamp_type comm_s, comm_e;
+  
   double dist, total_inertia, total_delta, delta = (double) opt.n_points;
   int i, center, iters = 0;
 
@@ -204,9 +245,16 @@ void _kmeans(double **data, double **centroids, int *membership, \
   check(point);
   double *tofree = point;
 
-  initialize(data, centroids, ppp, rank, size, opt);
+  get_timestamp(&time_is);
+  t->comm_time += initialize(data, centroids, ppp, rank, size, opt);
+  get_timestamp(&time_ie);
+
+  get_timestamp(&comm_s);
   MPI_Bcast(*centroids, opt.n_centroids*opt.dimensions, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-    
+  get_timestamp(&comm_e);
+  t->comm_time += timestamp_diff_in_seconds(comm_s, comm_e);
+
+  get_timestamp(&time_cs);
   while (delta / ((double) opt.n_points) > opt.tol && iters < opt.max_iter) {
     // MPI_Barrier(MPI_COMM_WORLD);
     delta = 0.0;
@@ -222,10 +270,13 @@ void _kmeans(double **data, double **centroids, int *membership, \
         new_count_centers[center]++; 
     }
 
+    get_timestamp(&comm_s);
     MPI_Allreduce(*new_centers, *centroids, opt.n_centroids * opt.dimensions, 
                   MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
     MPI_Allreduce(new_count_centers, count_centers, opt.n_centroids, 
                   MPI_INT, MPI_SUM, MPI_COMM_WORLD);
+    get_timestamp(&comm_e);
+    t->comm_time += timestamp_diff_in_seconds(comm_s, comm_e);
 
     for(i = 0; i < opt.n_centroids; i++) {
         if(count_centers[i] == 0) {
@@ -234,7 +285,10 @@ void _kmeans(double **data, double **centroids, int *membership, \
             add(centroids[i], data[randint(opt.local_rows)], opt);
           }
           // broadcast this new point to everyone
+          get_timestamp(&comm_s);
           MPI_Bcast(centroids[i], opt.dimensions, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+          get_timestamp(&comm_e);
+          t->comm_time += timestamp_diff_in_seconds(comm_s, comm_e);
           // add to delta to ensure we dont stop after this
           delta += opt.tol * opt.local_rows + 1.0;
         }
@@ -246,11 +300,15 @@ void _kmeans(double **data, double **centroids, int *membership, \
     }
 
     // sum up the number of cluster assignments that changed
+    get_timestamp(&comm_s);
     MPI_Allreduce(&delta, &total_delta, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
     delta = total_delta;
     // sum up the inertias
     MPI_Allreduce(inertia, &total_inertia, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
     *inertia = total_inertia;
+    get_timestamp(&comm_e);
+    t->comm_time += timestamp_diff_in_seconds(comm_s, comm_e);
+
     // zero out new_centers and count_centers
     memset(*new_centers, 0, opt.n_centroids * opt.dimensions * sizeof(double));
     memset(new_count_centers, 0, opt.n_centroids * sizeof(int));
@@ -264,17 +322,28 @@ void _kmeans(double **data, double **centroids, int *membership, \
         printf("\tinertia: %f\n", *inertia);
     }
   }
+  get_timestamp(&time_ce);
+  t->init_time += timestamp_diff_in_seconds(time_is, time_ie);
+  t->comp_time += timestamp_diff_in_seconds(time_cs, time_ce);
+
+
   free(*new_centers);
   free(new_centers);
   free(count_centers);
   free(new_count_centers);
   free(tofree);
+
+  if(iters == opt.max_iter && rank == 0 && opt.verbose > 0) {
+      printf("HIT MAX ITERS\n");
+  }
+
+  return iters;
 } 
 
 
-void kmeans(double **data, double **centroids, int *membership, \
-            double *inertia, int rank, int size, int *ppp, options opt) {
-  int i;
+int kmeans(double **data, double **centroids, int *membership, \
+            double *inertia, int rank, int size, int *ppp, mytimer *t, options opt) {
+  int i, iterations = 0;
   double **temp_centroids = (double**) alloc2d(opt.n_centroids, opt.dimensions);
   int *temp_membership = (int*) calloc(opt.local_rows, sizeof(int));
   check(temp_membership);
@@ -282,7 +351,7 @@ void kmeans(double **data, double **centroids, int *membership, \
   for(i = 0; i < opt.trials; i++){
     // MPI_Barrier(MPI_COMM_WORLD);
     if(opt.verbose > 1 && rank == 0) printf("\nTRIAL %d\n", i+1);
-    _kmeans(data, temp_centroids, temp_membership, &temp_inertia, rank, size, ppp, opt);
+    iterations += _kmeans(data, temp_centroids, temp_membership, &temp_inertia, rank, size, ppp, t, opt);
     if(temp_inertia < *inertia) {
       *inertia = temp_inertia;
       memcpy(*centroids, *temp_centroids, opt.n_centroids * opt.dimensions * sizeof(double));
@@ -292,6 +361,8 @@ void kmeans(double **data, double **centroids, int *membership, \
   free(*temp_centroids);
   free(temp_centroids);
   free(temp_membership);
+
+  return iterations;
 }
 
 

@@ -4,22 +4,34 @@
 #include <string.h>
 #include <float.h>
 #include "helper.h"
+#include "util.h"
 
 #define SQR(x) (x)*(x)
+
+typedef struct mytimer
+{
+    double total_time;
+    double init_time;
+    double comp_time;
+} mytimer;
 
 void initialize(double **data, double **centroids, options opt);
 double distance(double *x1, double *x2, options opt);
 void find_nearest_centroid(double *x, double **centroids, options opt, \
                             int *idx, double *dist);
-void _kmeans(double **data, double **centroids, int *membership, \
-            double *inertia, options opt); 
-void kmeans(double **data, double **centroids, int *membership, \
-            double *inertia, options opt); 
+int _kmeans(double **data, double **centroids, int *membership, \
+            double *inertia, mytimer *t, options opt); 
+int kmeans(double **data, double **centroids, int *membership, \
+            double *inertia, mytimer *t, options opt); 
 
 
 int main(int argc, char **argv) {
 
     srand(time(NULL));
+
+    mytimer timer;
+    timer.total_time = timer.init_time = timer.comp_time = 0.0;
+    timestamp_type time_s, time_e;
 
     options opt;
     parse_command_line(argc, argv, &opt);
@@ -37,12 +49,23 @@ int main(int argc, char **argv) {
     check(membership);
 
     double inertia = DBL_MAX;
-    kmeans(data, centroids, membership, &inertia, opt);
+    int total_iterations = 0;
+    get_timestamp(&time_s);
+    total_iterations = kmeans(data, centroids, membership, &inertia, &timer, opt);
+    get_timestamp(&time_e);
+    timer.total_time = timestamp_diff_in_seconds(time_s, time_e);
 
     if(opt.verbose > 0) { 
-        printf("\nINERTIA: %f\n", inertia);
         print_vecs(centroids, opt, "centroids");
     }
+
+    printf("\nSEQUENTIAL K-MEANS\n");
+    printf("Inertia: %f\n", inertia);
+    printf("Total Iterations: %d\n", total_iterations);
+    printf("Runtime: %f\n", timer.total_time);
+    printf("Initialization time: %f\n", timer.init_time);
+    printf("Computation time: %f\n", timer.comp_time);
+
 
     free(*data);
     free(data); 
@@ -90,9 +113,12 @@ void find_nearest_centroid(double *x, double **centroids, options opt, \
 }
 
 
-void _kmeans(double **data, double **centroids, int *membership, \
-            double *inertia, options opt) {
+int _kmeans(double **data, double **centroids, int *membership, \
+            double *inertia, mytimer *t, options opt) {
     
+    timestamp_type time_is, time_ie;
+    timestamp_type time_cs, time_ce;
+
     double dist, delta = (double) opt.n_points;
     int i, center, iters = 0;
 
@@ -102,9 +128,11 @@ void _kmeans(double **data, double **centroids, int *membership, \
     // allocate array to count points in each cluster, initialize to 0
     int *count_centers = (int*) calloc(opt.n_centroids, sizeof(int));
 
+    get_timestamp(&time_is);
     initialize(data, centroids, opt);
-    
+    get_timestamp(&time_ie);
 
+    get_timestamp(&time_cs);
     while (delta / ((double) opt.n_points) > opt.tol && iters < opt.max_iter) {
         delta = 0.0;
         *inertia = 0.0;
@@ -143,21 +171,31 @@ void _kmeans(double **data, double **centroids, int *membership, \
             printf("\tinertia: %f\n", *inertia);
         }
     }
+    get_timestamp(&time_ce);
+    t->init_time += timestamp_diff_in_seconds(time_is, time_ie);
+    t->comp_time += timestamp_diff_in_seconds(time_cs, time_ce);
+    
     free(*new_centers);
     free(new_centers);
     free(count_centers);
+
+    if(iters == opt.max_iter && opt.verbose > 0) {
+        printf("HIT MAX ITERS\n");
+    }
+
+    return iters;
 }
 
-void kmeans(double **data, double **centroids, int *membership, \
-            double *inertia, options opt) {
-    int i;
+int kmeans(double **data, double **centroids, int *membership, \
+            double *inertia, mytimer *t, options opt) {
+    int i, iterations = 0;
     double **temp_centroids = (double**) alloc2d(opt.n_centroids, opt.dimensions);
     int *temp_membership = (int*) calloc(opt.n_points, sizeof(int));
     check(temp_membership);
     double temp_inertia = DBL_MAX;
     for(i = 0; i < opt.trials; i++){
         if(opt.verbose > 1) printf("\nTRIAL %d\n", i+1);
-        _kmeans(data, temp_centroids, temp_membership, &temp_inertia, opt);
+        iterations += _kmeans(data, temp_centroids, temp_membership, &temp_inertia, t, opt);
         if(temp_inertia < *inertia) {
             *inertia = temp_inertia;
             memcpy(*centroids, *temp_centroids, opt.n_centroids * opt.dimensions * sizeof(double));
@@ -167,6 +205,8 @@ void kmeans(double **data, double **centroids, int *membership, \
     free(*temp_centroids);
     free(temp_centroids);
     free(temp_membership);
+
+    return iterations;
 }
 
 
