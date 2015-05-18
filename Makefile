@@ -1,7 +1,7 @@
 EXECUTABLES = seq-kmeans mpi-kmeans
 COMPILER = gcc
 MPICOMPILER = mpicc
-CFLAGS = -g -Wall -lm -O3
+CFLAGS = -g -Wall -lm -O3 -D TIME_ALL
 
 .PHONY: all
 all: $(EXECUTABLES)
@@ -16,7 +16,12 @@ seq-kmeans: seq-kmeans.c helper.c
 mpi: mpi-kmeans
 
 mpi-kmeans: mpi-kmeans.c mpifile.c helper.c
-	$(MPICOMPILER) $(CFLAGS) -D TIME_ALL $^ -o $@
+	$(MPICOMPILER) $(CFLAGS) $^ -o $@
+
+.PHONY: stampede
+stampede: seq-kmeans.c mpi-kmeans.c mpifile.c helper.c
+	$(COMPILER) $(CFLAGS) -lrt seq-kmeans.c helper.c -o seq-kmeans
+	$(MPICOMPILER) $(CFLAGS) -lrt mpi-kmeans.c mpifile.c helper.c -o mpi-kmeans
 
 .PHONY: seq-test
 seq-test:
