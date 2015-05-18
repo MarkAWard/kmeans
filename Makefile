@@ -1,7 +1,7 @@
 EXECUTABLES = seq-kmeans mpi-kmeans
 COMPILER = gcc
 MPICOMPILER = mpicc
-CFLAGS = -g -Wall -lm -O3 -D TIME_ALL
+CFLAGS = -g -Wall -O3 -D TIME_ALL
 
 .PHONY: all
 all: $(EXECUTABLES)
