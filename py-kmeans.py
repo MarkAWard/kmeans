@@ -1,9 +1,9 @@
 import numpy as np
 
-def l2_distance(x1, x2):
-	return np.linalg.norm(x1-x2)
+def distance(x1, x2):
+	return np.sum((x1-x2)**2)
 
-def find_nearest_centroid(point, centroids, distance=l2_distance):
+def find_nearest_centroid(point, centroids, distance=distance):
 	d_min = distance(point, centroids[0])
 	idx = 0
 	for i in range(1, len(centroids)):

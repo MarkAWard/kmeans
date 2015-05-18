@@ -2,7 +2,7 @@ import numpy as np
 
 
 def find_nearest_centroids(data, centroids):
-	all_distances = np.array([[np.linalg.norm(x-c) for c in centroids] for x in data])
+	all_distances = np.array([[np.sum((x-c)**2) for c in centroids] for x in data])
 	return np.argmin(all_distances, axis=1), np.amin(all_distances, axis=1)
 
 def kmeans(data, n_clusters=10, init='random', tol=0.0001, max_iter=300, best_of=10):

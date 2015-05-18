@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <math.h>
 #include <time.h>
 #include <string.h>
 #include <float.h>
@@ -9,9 +8,9 @@
 #define SQR(x) (x)*(x)
 
 void initialize(double **data, double **centroids, options opt);
-double l2_distance(double *x1, double *x2, options opt);
+double distance(double *x1, double *x2, options opt);
 void find_nearest_centroid(double *x, double **centroids, options opt, \
-                            int *idx, double *distance);
+                            int *idx, double *dist);
 void _kmeans(double **data, double **centroids, int *membership, \
             double *inertia, options opt); 
 void kmeans(double **data, double **centroids, int *membership, \
@@ -66,25 +65,25 @@ void initialize(double **data, double **centroids, options opt) {
     free(init);
 }
 
-double l2_distance(double *x1, double *x2, options opt) {
+double distance(double *x1, double *x2, options opt) {
     int i;
     double dist = 0.0;
     for (i = 0; i < opt.dimensions; i++) {
         dist += SQR(x1[i] - x2[i]); 
     }
-    return sqrt(dist);
+    return dist;
 }
 
 void find_nearest_centroid(double *x, double **centroids, options opt, \
-                            int *idx, double *distance) {
+                            int *idx, double *dist) {
     int i;
     double curr_distance;
-    *distance = l2_distance(x, centroids[0], opt);
+    *dist = distance(x, centroids[0], opt);
     *idx = 0;
     for(i = 1; i < opt.n_centroids; i++){
-        curr_distance = l2_distance(x, centroids[i], opt);
-        if( curr_distance < *distance) {
-            *distance = curr_distance;
+        curr_distance = distance(x, centroids[i], opt);
+        if( curr_distance < *dist) {
+            *dist = curr_distance;
             *idx = i;
         }
     }
