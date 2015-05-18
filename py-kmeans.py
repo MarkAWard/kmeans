@@ -62,7 +62,6 @@ def kmeans(data, n_clusters=10, init='random', tol=0.0001, max_iter=300, best_of
 
 	while loops < best_of:
 		inertia, centroids, labels = _kmeans(data, n_clusters, init, tol, max_iter)
-		print centroids
 		if inertia < best_inertia:
 			best_inertia = inertia
 			best_centroids = centroids
