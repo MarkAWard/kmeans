@@ -1,4 +1,5 @@
 import argparse
+import time
 import numpy as np
 from sklearn.cluster import KMeans
 
@@ -35,8 +36,13 @@ if __name__ == "__main__":
 	if args.dimensions != -1:
 		data = data[:,:args.dimensions]
 
+	start = time.time()
 	kmeans = KMeans(n_clusters=args.n_centroids, init='random', max_iter=args.max_iter, 
 					n_init=args.trials, tol=args.tol, n_jobs=args.cpus)
 	kmeans.fit(data)
+	end = time.time()
 
-	print kmeans.inertia_
+	print "\nSKLEARN K-MEANS"
+	print "%dx%d data, %d clusters, %d trials, %d cores" %(data.shape[0], data.shape[1], args.n_centroids, args.trials, args.cpus)
+	print "Inertia: %f" %kmeans.inertia_
+	print "Runtime: %f s" %(end - start)

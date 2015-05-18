@@ -1,4 +1,5 @@
 import numpy as np
+import time
 
 def distance(x1, x2):
 	return np.sum((x1-x2)**2)
@@ -101,6 +102,15 @@ if __name__ == "__main__":
 	if args.dimensions != -1:
 		data = data[:,:args.dimensions]
 
+	start = time.time()
 	inertia, centers, labels = kmeans(data, best_of=args.trials, max_iter=args.max_iter, 
 									n_clusters=args.n_centroids, tol=args.tol)
-	print inertia
+	end = time.time()
+
+	print "\nPYTHON K-MEANS"
+	print "%dx%d data, %d clusters, %d trials, 1 core" %(data.shape[0], data.shape[1], args.n_centroids, args.trials)
+	print "Inertia: %f" %inertia
+	print "Runtime: %f s" %(end - start)
+
+
+

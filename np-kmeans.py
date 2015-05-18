@@ -1,4 +1,5 @@
 import numpy as np
+import time
 
 
 def find_nearest_centroids(data, centroids):
@@ -22,6 +23,7 @@ def kmeans(data, n_clusters=10, init='random', tol=0.0001, max_iter=300, best_of
 		iters = 0
 		inertia = 0.0
 
+		comp_s = time.time()
 		while delta / N > tol and iters < max_iter:
 			delta = 0.0
 			inertia = 0.0
@@ -38,22 +40,26 @@ def kmeans(data, n_clusters=10, init='random', tol=0.0001, max_iter=300, best_of
 							else data[np.random.random_integers(data.shape[0]-1)] 
 							for i, c in zip(xrange(len(count_centers)), count_centers) ])
 			iters += 1
-		return inertia, centroids, memberships
+		comp_e = time.time()
+		return inertia, centroids, memberships, iters, comp_e - comp_s
 
 	best_inertia = np.inf
 	best_centroids = np.zeros((n_clusters, data.shape[1]))
 	best_labels = np.zeros(data.shape[0])
 	loops = 0
+	comp_time = 0.0
+	total_iterations = 0
 
 	while loops < best_of:
-		inertia, centroids, labels = _kmeans(data, n_clusters, init, tol, max_iter)
-		print centroids
+		inertia, centroids, labels, iterations, elapsed = _kmeans(data, n_clusters, init, tol, max_iter)
+		total_iterations += iterations
+		comp_time += elapsed
 		if inertia < best_inertia:
 			best_inertia = inertia
 			best_centroids = centroids
 			best_labels = labels
 		loops += 1
-	return best_inertia, best_centroids, best_labels
+	return best_inertia, best_centroids, best_labels, total_iterations, comp_time
 
 
 if __name__ == "__main__":
@@ -87,8 +93,16 @@ if __name__ == "__main__":
 	if args.dimensions != -1:
 		data = data[:,:args.dimensions]
 
-	inertia, centers, labels = kmeans(data, best_of=args.trials, max_iter=args.max_iter, 
+	start = time.time()
+	inertia, centers, labels, total_iterations, comp_time = kmeans(data, best_of=args.trials, max_iter=args.max_iter, 
 									n_clusters=args.n_centroids, tol=args.tol)
-	print inertia
+	end = time.time()
+
+	print "\nNUMPY K-MEANS"
+	print "%dx%d data, %d clusters, %d trials, 1 core" %(data.shape[0], data.shape[1], args.n_centroids, args.trials)
+	print "Inertia: %f" %inertia
+	print "Total Iterations: %d" %total_iterations
+	print "Runtime: %f s" %(end - start)
+	print "Computation time: %f" %comp_time
 
 

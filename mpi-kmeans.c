@@ -106,13 +106,13 @@ int main( int argc, char **argv) {
 
   if(mpi_rank == 0) {
     printf("\nMPI K-MEANS\n");
-    printf("%dx%d data, %d clusters, %d trials\n", opt.n_points, opt.dimensions, opt.n_centroids, opt.trials);
+    printf("%dx%d data, %d clusters, %d trials, %d cores\n", opt.n_points, opt.dimensions, opt.n_centroids, opt.trials, mpi_size);
     printf("Inertia: %f\n", inertia);
     printf("Total Iterations: %d\n", total_iterations);
-    printf("Runtime: %f\n", timer.total_time);
-    printf("Initialization time: %f\n", timer.init_time);
-    printf("Computation time: %f\n", timer.comp_time);
-    printf("Communication time: %f\n", timer.comm_time);
+    printf("Runtime: %f s\n", timer.total_time);
+    printf("Initialization time: %f s\n", timer.init_time);
+    printf("Computation time: %f s\n", timer.comp_time);
+    printf("Communication time: %f s\n", timer.comm_time);
   }
 
   MPI_File_close(&filename);
