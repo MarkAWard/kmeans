@@ -102,7 +102,7 @@ if __name__ == "__main__":
 	print "%dx%d data, %d clusters, %d trials, 1 core" %(data.shape[0], data.shape[1], args.n_centroids, args.trials)
 	print "Inertia: %f" %inertia
 	print "Total Iterations: %d" %total_iterations
-	print "Runtime: %f s" %(end - start)
-	print "Computation time: %f" %comp_time
+	print "Runtime: %fs" %(end - start)
+	print "Computation time: %fs" %comp_time
 
 

@@ -45,4 +45,4 @@ if __name__ == "__main__":
 	print "\nSKLEARN K-MEANS"
 	print "%dx%d data, %d clusters, %d trials, %d cores" %(data.shape[0], data.shape[1], args.n_centroids, args.trials, args.cpus)
 	print "Inertia: %f" %kmeans.inertia_
-	print "Runtime: %f s" %(end - start)
+	print "Runtime: %fs" %(end - start)

@@ -109,10 +109,10 @@ int main( int argc, char **argv) {
     printf("%dx%d data, %d clusters, %d trials, %d cores\n", opt.n_points, opt.dimensions, opt.n_centroids, opt.trials, mpi_size);
     printf("Inertia: %f\n", inertia);
     printf("Total Iterations: %d\n", total_iterations);
-    printf("Runtime: %f s\n", timer.total_time);
-    printf("Initialization time: %f s\n", timer.init_time);
-    printf("Computation time: %f s\n", timer.comp_time);
-    printf("Communication time: %f s\n", timer.comm_time);
+    printf("Runtime: %fs\n", timer.total_time);
+    printf("Initialization time: %fs\n", timer.init_time);
+    printf("Computation time: %fs\n", timer.comp_time);
+    printf("Communication time: %fs\n", timer.comm_time);
   }
 
   MPI_File_close(&filename);

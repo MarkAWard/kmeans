@@ -63,9 +63,9 @@ int main(int argc, char **argv) {
     printf("%dx%d data, %d clusters, %d trials, 1 core\n", opt.n_points, opt.dimensions, opt.n_centroids, opt.trials);
     printf("Inertia: %f\n", inertia);
     printf("Total Iterations: %d\n", total_iterations);
-    printf("Runtime: %f s\n", timer.total_time);
-    printf("Initialization time: %f s\n", timer.init_time);
-    printf("Computation time: %f s\n", timer.comp_time);
+    printf("Runtime: %fs\n", timer.total_time);
+    printf("Initialization time: %fs\n", timer.init_time);
+    printf("Computation time: %fs\n", timer.comp_time);
 
 
     free(*data);

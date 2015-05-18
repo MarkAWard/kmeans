@@ -33,6 +33,7 @@ def kmeans(data, n_clusters=10, init='random', tol=0.0001, max_iter=300, best_of
 		iters = 0
 		inertia = 0.0
 
+		comp_s = time.time()
 		while delta / N > tol and iters < max_iter:
 			delta = 0.0
 			inertia = 0.0
@@ -53,21 +54,26 @@ def kmeans(data, n_clusters=10, init='random', tol=0.0001, max_iter=300, best_of
 			new_centers = np.zeros((n_clusters, data.shape[1]))
 			count_centers = np.zeros(n_clusters)
 			iters += 1
-		return inertia, centroids, membership
+		comp_e = time.time()
+		return inertia, centroids, membership, iters, comp_e - comp_s
 
 	best_inertia = np.inf
 	best_centroids = np.zeros((n_clusters, data.shape[1]))
 	best_labels = np.zeros(data.shape[0])
 	loops = 0
+	comp_time = 0.0
+	total_iterations = 0
 
 	while loops < best_of:
-		inertia, centroids, labels = _kmeans(data, n_clusters, init, tol, max_iter)
+		inertia, centroids, labels, iterations, elapsed = _kmeans(data, n_clusters, init, tol, max_iter)
+		total_iterations += iterations
+		comp_time += elapsed
 		if inertia < best_inertia:
 			best_inertia = inertia
 			best_centroids = centroids
 			best_labels = labels
 		loops += 1
-	return best_inertia, best_centroids, best_labels
+	return best_inertia, best_centroids, best_labels, total_iterations, comp_time
 
 
 if __name__ == "__main__":
@@ -102,14 +108,15 @@ if __name__ == "__main__":
 		data = data[:,:args.dimensions]
 
 	start = time.time()
-	inertia, centers, labels = kmeans(data, best_of=args.trials, max_iter=args.max_iter, 
+	inertia, centers, labels, total_iterations, comp_time = kmeans(data, best_of=args.trials, max_iter=args.max_iter, 
 									n_clusters=args.n_centroids, tol=args.tol)
 	end = time.time()
 
 	print "\nPYTHON K-MEANS"
 	print "%dx%d data, %d clusters, %d trials, 1 core" %(data.shape[0], data.shape[1], args.n_centroids, args.trials)
 	print "Inertia: %f" %inertia
-	print "Runtime: %f s" %(end - start)
-
+	print "Total Iterations: %d" %total_iterations
+	print "Runtime: %fs" %(end - start)
+	print "Computation time: %fs" %comp_time
 
 
