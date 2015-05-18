@@ -16,7 +16,7 @@ seq-kmeans: seq-kmeans.c helper.c
 mpi: mpi-kmeans
 
 mpi-kmeans: mpi-kmeans.c mpifile.c helper.c
-	$(MPICOMPILER) $(CFLAGS) $^ -o $@
+	$(MPICOMPILER) $(CFLAGS) -D TIME_ALL $^ -o $@
 
 .PHONY: seq-test
 seq-test:
