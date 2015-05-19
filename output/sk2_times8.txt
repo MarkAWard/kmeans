@@ -1,0 +1,50 @@
+
+SKLEARN K-MEANS
+61878x93 data, 5 clusters, 500 trials, 8 cores
+Inertia: 25540953.847605
+Runtime: 745.986303s
+
+SKLEARN K-MEANS
+61878x93 data, 10 clusters, 500 trials, 8 cores
+Inertia: 21180966.310571
+Runtime: 1057.236227s
+
+SKLEARN K-MEANS
+61878x93 data, 15 clusters, 500 trials, 8 cores
+Inertia: 18671933.922883
+Runtime: 1525.728100s
+
+SKLEARN K-MEANS
+61878x93 data, 20 clusters, 500 trials, 8 cores
+Inertia: 16810437.154159
+Runtime: 1969.448550s
+
+SKLEARN K-MEANS
+61878x93 data, 25 clusters, 500 trials, 8 cores
+Inertia: 15355333.163541
+Runtime: 2358.856173s
+
+SKLEARN K-MEANS
+61878x93 data, 30 clusters, 500 trials, 8 cores
+Inertia: 14431877.190221
+Runtime: 2818.685118s
+
+SKLEARN K-MEANS
+61878x93 data, 35 clusters, 500 trials, 8 cores
+Inertia: 13700475.253735
+Runtime: 2911.323489s
+
+SKLEARN K-MEANS
+61878x93 data, 40 clusters, 500 trials, 8 cores
+Inertia: 12991195.457176
+Runtime: 3010.813351s
+
+SKLEARN K-MEANS
+61878x93 data, 45 clusters, 500 trials, 8 cores
+Inertia: 12432917.393469
+Runtime: 3076.566649s
+
+SKLEARN K-MEANS
+61878x93 data, 50 clusters, 500 trials, 8 cores
+Inertia: 11896372.604058
+Runtime: 3355.696359s
