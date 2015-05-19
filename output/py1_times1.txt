@@ -1,0 +1,35 @@
+
+PYTHON K-MEANS
+10000x10 data, 5 clusters, 100 trials, 1 core
+Inertia: 1893075.902311
+Total Iterations: 936
+Runtime: 382.292804s
+Computation time: 382.237502s
+
+PYTHON K-MEANS
+10000x10 data, 10 clusters, 100 trials, 1 core
+Inertia: 943962.926389
+Total Iterations: 1015
+Runtime: 765.673553s
+Computation time: 765.618356s
+
+PYTHON K-MEANS
+10000x10 data, 15 clusters, 100 trials, 1 core
+Inertia: 493843.435897
+Total Iterations: 1874
+Runtime: 2128.324306s
+Computation time: 2128.265039s
+
+PYTHON K-MEANS
+10000x10 data, 20 clusters, 100 trials, 1 core
+Inertia: 140196.359511
+Total Iterations: 2685
+Runtime: 3912.876191s
+Computation time: 3912.817270s
+
+PYTHON K-MEANS
+10000x10 data, 25 clusters, 100 trials, 1 core
+Inertia: 97115.893795
+Total Iterations: 3111
+Runtime: 5651.089526s
+Computation time: 5651.029837s
