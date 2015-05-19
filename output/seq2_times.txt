@@ -54,3 +54,11 @@ Total Iterations: 43368
 Runtime: 8207.023116s
 Initialization time: 0.008352s
 Computation time: 8207.012657s
+
+SEQUENTIAL K-MEANS
+61878x93 data, 40 clusters, 500 trials, 1 core
+Inertia: 12956895.850280
+Total Iterations: 42073
+Runtime: 8844.461240s
+Initialization time: 0.007053s
+Computation time: 8844.452184s
