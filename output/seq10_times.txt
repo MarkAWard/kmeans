@@ -1,0 +1,80 @@
+
+SEQUENTIAL K-MEANS
+100000x10 data, 5 clusters, 500 trials, 1 core
+Inertia: 18562991.770707
+Total Iterations: 6288
+Runtime: 58.891213s
+Initialization time: 0.000303s
+Computation time: 58.889846s
+
+SEQUENTIAL K-MEANS
+100000x10 data, 10 clusters, 500 trials, 1 core
+Inertia: 11510437.509002
+Total Iterations: 5548
+Runtime: 84.018024s
+Initialization time: 0.000448s
+Computation time: 84.016447s
+
+SEQUENTIAL K-MEANS
+100000x10 data, 15 clusters, 500 trials, 1 core
+Inertia: 6883057.506342
+Total Iterations: 10932
+Runtime: 224.904852s
+Initialization time: 0.000549s
+Computation time: 224.903072s
+
+SEQUENTIAL K-MEANS
+100000x10 data, 20 clusters, 500 trials, 1 core
+Inertia: 3658958.129013
+Total Iterations: 22488
+Runtime: 577.088935s
+Initialization time: 0.000811s
+Computation time: 577.086827s
+
+SEQUENTIAL K-MEANS
+100000x10 data, 25 clusters, 500 trials, 1 core
+Inertia: 1757314.858276
+Total Iterations: 31613
+Runtime: 973.162127s
+Initialization time: 0.000905s
+Computation time: 973.159812s
+
+SEQUENTIAL K-MEANS
+100000x10 data, 30 clusters, 500 trials, 1 core
+Inertia: 986851.621468
+Total Iterations: 36917
+Runtime: 1353.057559s
+Initialization time: 0.001502s
+Computation time: 1353.054347s
+
+SEQUENTIAL K-MEANS
+100000x10 data, 35 clusters, 500 trials, 1 core
+Inertia: 973181.243012
+Total Iterations: 40498
+Runtime: 1731.253122s
+Initialization time: 0.002164s
+Computation time: 1731.249535s
+
+SEQUENTIAL K-MEANS
+100000x10 data, 40 clusters, 500 trials, 1 core
+Inertia: 960842.421574
+Total Iterations: 43036
+Runtime: 2054.864886s
+Initialization time: 0.001587s
+Computation time: 2054.861831s
+
+SEQUENTIAL K-MEANS
+100000x10 data, 45 clusters, 500 trials, 1 core
+Inertia: 947943.672618
+Total Iterations: 44915
+Runtime: 2375.413975s
+Initialization time: 0.002113s
+Computation time: 2375.410331s
+
+SEQUENTIAL K-MEANS
+100000x10 data, 50 clusters, 500 trials, 1 core
+Inertia: 937801.054890
+Total Iterations: 46234
+Runtime: 2598.712266s
+Initialization time: 0.002076s
+Computation time: 2598.708722s

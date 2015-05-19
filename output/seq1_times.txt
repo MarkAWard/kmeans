@@ -1,0 +1,80 @@
+
+SEQUENTIAL K-MEANS
+10000x10 data, 5 clusters, 500 trials, 1 core
+Inertia: 1893075.902311
+Total Iterations: 4357
+Runtime: 4.269101s
+Initialization time: 0.000222s
+Computation time: 4.268518s
+
+SEQUENTIAL K-MEANS
+10000x10 data, 10 clusters, 500 trials, 1 core
+Inertia: 943206.799271
+Total Iterations: 4750
+Runtime: 7.593932s
+Initialization time: 0.000440s
+Computation time: 7.592917s
+
+SEQUENTIAL K-MEANS
+10000x10 data, 15 clusters, 500 trials, 1 core
+Inertia: 455984.353036
+Total Iterations: 8105
+Runtime: 17.537620s
+Initialization time: 0.000493s
+Computation time: 17.536606s
+
+SEQUENTIAL K-MEANS
+10000x10 data, 20 clusters, 500 trials, 1 core
+Inertia: 99120.954459
+Total Iterations: 11635
+Runtime: 31.774183s
+Initialization time: 0.000613s
+Computation time: 31.773092s
+
+SEQUENTIAL K-MEANS
+10000x10 data, 25 clusters, 500 trials, 1 core
+Inertia: 97047.262686
+Total Iterations: 13585
+Runtime: 44.371132s
+Initialization time: 0.000790s
+Computation time: 44.369819s
+
+SEQUENTIAL K-MEANS
+10000x10 data, 30 clusters, 500 trials, 1 core
+Inertia: 95118.565567
+Total Iterations: 14762
+Runtime: 56.499071s
+Initialization time: 0.000938s
+Computation time: 56.497601s
+
+SEQUENTIAL K-MEANS
+10000x10 data, 35 clusters, 500 trials, 1 core
+Inertia: 93334.665589
+Total Iterations: 15740
+Runtime: 68.767029s
+Initialization time: 0.001136s
+Computation time: 68.765374s
+
+SEQUENTIAL K-MEANS
+10000x10 data, 40 clusters, 500 trials, 1 core
+Inertia: 91596.358252
+Total Iterations: 15936
+Runtime: 77.772644s
+Initialization time: 0.001330s
+Computation time: 77.770719s
+
+SEQUENTIAL K-MEANS
+10000x10 data, 45 clusters, 500 trials, 1 core
+Inertia: 90079.146768
+Total Iterations: 16281
+Runtime: 88.222011s
+Initialization time: 0.001493s
+Computation time: 88.219900s
+
+SEQUENTIAL K-MEANS
+10000x10 data, 50 clusters, 500 trials, 1 core
+Inertia: 88955.192999
+Total Iterations: 16870
+Runtime: 100.341058s
+Initialization time: 0.001743s
+Computation time: 100.338702s
