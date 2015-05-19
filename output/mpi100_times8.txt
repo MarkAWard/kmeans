@@ -1,0 +1,80 @@
+MPI K MEANS
+1000000x10 data, 5 clusters, 500 trials, 8 cores
+Inertia: 208447432.403683
+Total Iterations: 7692
+Runtime: 52.246899s
+Initialization time: 0.007372s
+Computation time: 52.235593s
+Communication time: 0.601642s
+  
+MPI K MEANS
+1000000x10 data, 10 clusters, 500 trials, 8 cores
+Inertia: 134678745.608228
+Total Iterations: 6063
+Runtime: 114.889632s
+Initialization time: 0.010337s
+Computation time: 114.874610s
+Communication time: 44.235290s
+  
+MPI K MEANS
+1000000x10 data, 15 clusters, 500 trials, 8 cores
+Inertia: 89421977.859874
+Total Iterations: 9413
+Runtime: 155.745660s
+Initialization time: 0.012629s
+Computation time: 155.728629s
+Communication time: 0.548135s
+  
+MPI K MEANS
+1000000x10 data, 20 clusters, 500 trials, 8 cores
+Inertia: 54359448.701000
+Total Iterations: 22332
+Runtime: 479.207601s
+Initialization time: 0.014866s
+Computation time: 479.188424s
+Communication time: 1.766189s
+  
+MPI K MEANS
+1000000x10 data, 25 clusters, 500 trials, 8 cores
+Inertia: 32449190.716745
+Total Iterations: 39750
+Runtime: 1126.974089s
+Initialization time: 0.017973s
+Computation time: 1126.950585s
+Communication time: 70.266746s
+  
+MPI K MEANS
+1000000x10 data, 30 clusters, 500 trials, 8 cores
+Inertia: 15875857.551772
+Total Iterations: 48763
+Runtime: 1544.093333s
+Initialization time: 0.022198s
+Computation time: 1544.065156s
+Communication time: 4.582294s
+  
+MPI K MEANS
+1000000x10 data, 35 clusters, 500 trials, 8 cores
+Inertia: 9890452.362520
+Total Iterations: 49945
+Runtime: 1826.320468s
+Initialization time: 0.024172s
+Computation time: 1826.289369s
+Communication time: 5.105197s
+  
+MPI K MEANS
+1000000x10 data, 40 clusters, 500 trials, 8 cores
+Inertia: 9781004.854605
+Total Iterations: 50000
+Runtime: 2086.121892s
+Initialization time: 0.024469s
+Computation time: 2086.091434s
+Communication time: 11.379575s
+  
+MPI K MEANS
+1000000x10 data, 45 clusters, 500 trials, 8 cores
+Inertia: 9684890.237641
+Total Iterations: 50000
+Runtime: 2318.349321s
+Initialization time: 0.026847s
+Computation time: 2318.315740s
+Communication time: 2.702256s
