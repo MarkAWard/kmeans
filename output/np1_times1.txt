@@ -26,3 +26,10 @@ Inertia: 222077.749656
 Total Iterations: 2636
 Runtime: 4472.530065s
 Computation time: 4472.447417s
+
+NUMPY K-MEANS
+10000x10 data, 25 clusters, 100 trials, 1 core
+Inertia: 97299.378418
+Total Iterations: 3047
+Runtime: 6384.633812s
+Computation time: 6384.554991s
