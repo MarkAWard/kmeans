@@ -1,0 +1,90 @@
+
+MPI K-MEANS
+61878x93 data, 5 clusters, 500 trials, 4 cores
+Inertia: 25540954.887859
+Total Iterations: 20362
+Runtime: 105.002451s
+Initialization time: 0.006937s
+Computation time: 104.991483s
+Communication time: 5.153548s
+
+MPI K-MEANS
+61878x93 data, 10 clusters, 500 trials, 4 cores
+Inertia: 21180966.370454
+Total Iterations: 24656
+Runtime: 209.043399s
+Initialization time: 0.011494s
+Computation time: 209.025420s
+Communication time: 3.629249s
+
+MPI K-MEANS
+61878x93 data, 15 clusters, 500 trials, 4 cores
+Inertia: 18556038.173189
+Total Iterations: 32588
+Runtime: 389.934156s
+Initialization time: 0.013676s
+Computation time: 389.908769s
+Communication time: 5.421466s
+
+MPI K-MEANS
+61878x93 data, 20 clusters, 500 trials, 4 cores
+Inertia: 16838284.016402
+Total Iterations: 36982
+Runtime: 577.054537s
+Initialization time: 0.016932s
+Computation time: 577.024017s
+Communication time: 7.396655s
+
+MPI K-MEANS
+61878x93 data, 25 clusters, 500 trials, 4 cores
+Inertia: 15521860.884484
+Total Iterations: 42062
+Runtime: 810.672270s
+Initialization time: 0.020838s
+Computation time: 810.638411s
+Communication time: 10.270391s
+
+MPI K-MEANS
+61878x93 data, 30 clusters, 500 trials, 4 cores
+Inertia: 14472078.447685
+Total Iterations: 44600
+Runtime: 1006.365530s
+Initialization time: 0.024956s
+Computation time: 1006.326426s
+Communication time: 9.211337s
+
+MPI K-MEANS
+61878x93 data, 35 clusters, 500 trials, 4 cores
+Inertia: 13482947.615811
+Total Iterations: 44309
+Runtime: 1181.142291s
+Initialization time: 0.027723s
+Computation time: 1181.097027s
+Communication time: 10.217688s
+
+MPI K-MEANS
+61878x93 data, 40 clusters, 500 trials, 4 cores
+Inertia: 13005327.654235
+Total Iterations: 43174
+Runtime: 1308.311987s
+Initialization time: 0.031526s
+Computation time: 1308.261494s
+Communication time: 18.093357s
+
+MPI K-MEANS
+61878x93 data, 45 clusters, 500 trials, 4 cores
+Inertia: 12466698.184201
+Total Iterations: 42502
+Runtime: 1527.008111s
+Initialization time: 0.034824s
+Computation time: 1526.952729s
+Communication time: 8.733249s
+
+MPI K-MEANS
+61878x93 data, 50 clusters, 500 trials, 4 cores
+Inertia: 11871309.448269
+Total Iterations: 43421
+Runtime: 1775.082126s
+Initialization time: 0.038615s
+Computation time: 1775.020912s
+Communication time: 7.175485s
