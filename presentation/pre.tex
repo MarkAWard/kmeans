@@ -445,11 +445,22 @@
 
 
 \section{Concluding Remarks}
-\begin{frame}
+\begin{frame}{Comments}
   \begin{itemize}
-  \item THE END
+  \item The best method for parallelization will depend on your data
+  \item There are much better methods for initializing the centroids to converge faster, kmeans++
+  \item Reading plain text files with MPI is annoying
+  \item Every now and then communication would hang (locally) for a long time before
+  \item Saw some errors/warnings when running on Mercer for larger data that I didn't see previously
   \end{itemize}
 \end{frame}
+
+\begin{frame}{huhh??}
+\begin{figure}
+	\includegraphics[keepaspectratio=true, width=4.5in]{bug.png}
+\end{figure}
+\end{frame}
+
 
 \begin{frame}[allowframebreaks]
   \frametitle<presentation>{Further Reading}    
@@ -467,15 +478,12 @@ MacQueen, James and others
 \newblock{\em Some methods for classification and analysis of multivariate observations}
 \newblock Proceedings of the fifth Berkeley symposium on mathematical statistics and probability. (1967) 281-297
 
+  \beamertemplatearticlebibitems
+  \bibitem{arthur2007k}
+Arthur, David and Vassilvitskii, Sergei
+\newblock{\em k-means++: The advantages of careful seeding}
+\newblock Proceedings of the eighteenth annual ACM-SIAM symposium on Discrete algorithms. (2007) 1027-1035
 
-%@inproceedings{arthur2007k,
-%  title={k-means++: The advantages of careful seeding},
-%  author={Arthur, David and Vassilvitskii, Sergei},
-%  booktitle={Proceedings of the eighteenth annual ACM-SIAM symposium on Discrete algorithms},
-%  pages={1027--1035},
-%  year={2007},
- % organization={Society for Industrial and Applied Mathematics}
-%}
 
 \end{thebibliography}
 \end{frame}   
